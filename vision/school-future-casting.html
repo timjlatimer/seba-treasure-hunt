@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Campus at Seba Hub — Future-Casting</title>
+<style>
+  :root{
+    --ink:#1d2733; --ink-soft:#48586a; --cream:#fbf8f2; --paper:#ffffff;
+    --lake:#1f6f78; --lake-deep:#15505a; --gold:#e0a32e; --gold-deep:#b9821a;
+    --line:#e7e0d3;
+    --live:#2e9e5b; --live-bg:#e7f6ec;
+    --coming:#d9912a; --coming-bg:#fdf2dd;
+    --dream:#7a5cc4; --dream-bg:#efe9fb;
+    --shadow:0 10px 30px rgba(20,40,50,.10);
+    --radius:18px;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--cream);line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:var(--serif);line-height:1.15;margin:0 0 .4em}
+  a{color:var(--lake-deep)}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+
+  /* header */
+  header{position:sticky;top:0;z-index:50;background:rgba(251,248,242,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 24px;max-width:1100px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{height:34px;width:auto}
+  .brand .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+  .btn{display:inline-block;background:var(--gold);color:#3a2a07;font-weight:700;border:0;border-radius:999px;padding:11px 22px;text-decoration:none;cursor:pointer;font-size:15px;transition:transform .15s,box-shadow .15s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(185,130,26,.35)}
+  .btn.lake{background:var(--lake);color:#fff}
+  .btn.lake:hover{box-shadow:0 8px 18px rgba(31,111,120,.4)}
+
+  /* hero */
+  .hero{position:relative;min-height:84vh;display:flex;align-items:flex-end;color:#fff;
+    background:linear-gradient(180deg,rgba(13,30,35,.15) 0%,rgba(13,30,35,.45) 55%,rgba(13,30,35,.86) 100%),url("images/aerial.jpg") center/cover no-repeat}
+  .hero .wrap{padding-bottom:56px;padding-top:90px}
+  .hero .eyebrow{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    padding:6px 14px;border-radius:999px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:18px}
+  .hero h1{font-size:clamp(34px,5.4vw,62px);color:#fff;max-width:16ch;text-shadow:0 2px 24px rgba(0,0,0,.35)}
+  .hero p.lede{font-size:clamp(17px,2.2vw,22px);max-width:46ch;margin:.2em 0 1.4em;color:#f3ede1;text-shadow:0 1px 14px rgba(0,0,0,.4)}
+  .hero .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .tagline{font-family:var(--serif);font-style:italic;font-size:18px;color:#ffe9c2;margin-top:6px}
+
+  /* legend */
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+  .chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);
+    border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600}
+  .dot{width:10px;height:10px;border-radius:50%}
+  .dot.live{background:#5fdc8e}
+  .dot.coming{background:#f6c451}.dot.dream{background:#b79cf0}
+
+  /* sections */
+  section.block{padding:70px 0}
+  .block .wrap>.eyebrow{display:inline-block;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:8px}
+  .block h2{font-size:clamp(26px,3.6vw,40px)}
+  .block .sub{font-size:18px;color:var(--ink-soft);max-width:60ch;margin:.2em 0 0}
+
+  .story{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .story .cols{display:grid;grid-template-columns:1fr 1fr;gap:42px;margin-top:24px}
+  .story .cols h3{font-size:21px;color:var(--lake-deep)}
+  .story .cols p{margin:.2em 0 0;color:var(--ink-soft)}
+  @media(max-width:760px){.story .cols{grid-template-columns:1fr;gap:24px}}
+
+  /* tier band header */
+  .tier-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:6px 14px;border-radius:999px}
+  .badge.live{background:var(--live-bg);color:var(--live)}
+  .badge.coming{background:var(--coming-bg);color:var(--coming-deep,#a06a15)}
+  .badge.dream{background:var(--dream-bg);color:var(--dream)}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:30px}
+  @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .card .ph{aspect-ratio:16/10;width:100%;object-fit:cover;display:block;background:#e9e3d6}
+  .card .body{padding:20px 22px 24px}
+  .card .tag{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .card.live .tag{color:var(--live)} .card.coming .tag{color:#a06a15} .card.dream .tag{color:var(--dream)}
+  .card h3{font-size:20px;margin:6px 0 6px}
+  .card p{margin:0;color:var(--ink-soft);font-size:15.5px}
+
+  /* photo slot placeholder */
+  .slot{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;text-align:center;
+    background:repeating-linear-gradient(45deg,#f3eee2,#f3eee2 14px,#efe8da 14px,#efe8da 28px);
+    border-bottom:1px dashed #c9bfa8;color:#8a7c5f;font-size:13px;font-weight:600;padding:14px}
+  .slot span{display:block;max-width:24ch}
+
+  /* feature strip (dream highlight) */
+  .feature{display:grid;grid-template-columns:1.1fr 1fr;gap:0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);margin-top:30px;background:var(--paper)}
+  .feature img{width:100%;height:100%;min-height:300px;object-fit:cover}
+  .feature .ftxt{padding:36px}
+  .feature .ftxt h3{font-size:26px}
+  @media(max-width:760px){.feature{grid-template-columns:1fr}}
+
+  /* signup */
+  .signup{background:linear-gradient(160deg,var(--lake) 0%,var(--lake-deep) 100%);color:#fff}
+  .signup h2{color:#fff}
+  .signup .sub{color:#d8ece9}
+  .form{margin-top:26px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:var(--radius);padding:26px;max-width:620px}
+  .form .row{display:flex;gap:14px;flex-wrap:wrap}
+  .form input[type=text],.form input[type=email]{flex:1;min-width:200px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.96);font-size:16px;color:var(--ink)}
+  .form .consent{display:flex;gap:10px;align-items:flex-start;margin:16px 0 18px;font-size:14px;color:#eaf5f3}
+  .form .consent input{margin-top:3px;width:18px;height:18px;flex:none}
+  .form .fineprint{font-size:12.5px;color:#bfddd9;margin:14px 0 0}
+  .ok{display:none;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:16px;margin-top:16px;font-weight:600}
+
+  footer{background:#11202a;color:#cdd8df;padding:48px 0;font-size:14px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:center}
+  footer img{height:30px;opacity:.9}
+  footer .sic{font-family:var(--serif);font-style:italic;color:#9fd0cd}
+  .draftnote{background:#fff4d6;border:1px solid #f0d488;color:#7a5c12;font-size:13px;padding:10px 16px;border-radius:10px;margin:18px auto 0;max-width:1100px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="brand">
+      <img src="images/logo.webp" alt="Seba Hub">
+      <span class="kicker">Future-Casting</span>
+    </div>
+    <a class="btn" href="#updates">Get Updates &rsaquo;</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">The Campus — School · RV Park · Digger Cafe</span>
+    <h1>A whole village is rising around the old school.</h1>
+    <p class="lede">Two hundred families on the lake today. Two hundred more in the back forty tomorrow. And a destination being dreamed up around a coffee shop and a giant chair.</p>
+    <div class="tagline">Purpose with Profit. Make a Difference.</div>
+    <div class="cta-row" style="margin-top:22px">
+      <a class="btn" href="#updates">Follow what&rsquo;s coming &rsaquo;</a>
+      <a class="btn lake" href="#dream">See the dream &rsaquo;</a>
+    </div>
+    <div class="legend">
+      <span class="chip"><span class="dot live"></span> Here now</span>
+      <span class="chip"><span class="dot coming"></span> Coming soon</span>
+      <span class="chip"><span class="dot dream"></span> The dream</span>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="block story">
+  <div class="wrap">
+    <span class="eyebrow">What this is</span>
+    <h2>Not a campground. A movement with a coffee shop.</h2>
+    <div class="cols">
+      <div>
+        <h3>The idea</h3>
+        <p>We&rsquo;re taking an old school on the lake and the RV park around it and turning them into one destination &mdash; a place where families camp, kids play, locals gather, and businesses are built. The school is the heart; everything else grows around it.</p>
+      </div>
+      <div>
+        <h3>Why it matters</h3>
+        <p>This is Social Impact Capitalism in the open air: profit with purpose, business as a force for good. Every cabin booked, every coffee poured, every kid on the ropes course makes this a more vibrant village &mdash; the kind of place amazing children grow up in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE -->
+<section class="block">
+  <div class="wrap">
+    <div class="tier-head"><span class="badge live">● Here now</span></div>
+    <h2>What you can come to today</h2>
+    <p class="sub">Real, open, and welcoming people right now.</p>
+    <div class="grid">
+      <div class="card live">
+        <img class="ph" src="images/school.webp" alt="The school">
+        <div class="body"><div class="tag">Here now</div><h3>The School</h3><p>The heart of the campus &mdash; events, gatherings, and the activities that already bring the community together.</p></div>
+      </div>
+      <div class="card live">
+        <img class="ph" src="images/properties.jpg" alt="The properties on the lake">
+        <div class="body"><div class="tag">Here now</div><h3>~200 RV Sites</h3><p>Two hundred families already make this their summer home on the lake, with room to grow.</p></div>
+      </div>
+      <div class="card live">
+        <div class="slot"><span>📸 Photo slot &mdash; drop a shot of the restaurant here (images/restaurant.jpg)</span></div>
+        <div class="body"><div class="tag">Here now</div><h3>The Restaurant</h3><p>Where campers, locals, and visitors meet over a good meal. <em>(Confirm name &amp; details.)</em></p></div>
+      </div>
+      <div class="card live">
+        <div class="slot"><span>📸 Photo slot &mdash; drop a driving-range shot here (images/driving-range.jpg)</span></div>
+        <div class="body"><div class="tag">Here now</div><h3>The Driving Range</h3><p>Swing away with the lake as your backdrop &mdash; one of the activities open today.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMING -->
+<section class="block" style="background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="tier-head"><span class="badge coming">● Coming soon</span></div>
+    <h2>What&rsquo;s being built in the back forty</h2>
+    <p class="sub">Underway or planned &mdash; the next chapter of the campus.</p>
+    <div class="grid">
+      <div class="card coming">
+        <div class="slot"><span>📸 Photo slot &mdash; aerial or render of the back forty (images/back-forty.jpg)</span></div>
+        <div class="body"><div class="tag">Coming soon</div><h3>200 New Sites</h3><p>Two hundred new units rising in the &ldquo;back forty&rdquo; behind the school &mdash; doubling the village.</p></div>
+      </div>
+      <div class="card coming">
+        <div class="slot"><span>📸 Photo slot &mdash; camp / activity render (images/rv-camps.jpg)</span></div>
+        <div class="body"><div class="tag">Coming soon</div><h3>New Camps</h3><p>Programmed camps and activities woven through the campus, so there&rsquo;s always something happening.</p></div>
+      </div>
+      <div class="card coming">
+        <img class="ph" src="images/digger-2ndfloor.jpg" alt="Digger Cafe second floor concept">
+        <div class="body"><div class="tag">Coming soon</div><h3>Digger Cafe &mdash; 2nd Floor</h3><p>A second storey on the Digger Cafe, opening up the view and the experience. (Concept drawing.)</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DREAM -->
+<section class="block" id="dream">
+  <div class="wrap">
+    <div class="tier-head"><span class="badge dream">● The dream</span></div>
+    <h2>What we&rsquo;re dreaming up around the Digger Cafe</h2>
+    <p class="sub">Bold ideas on the horizon. Not built yet &mdash; this is the vision we&rsquo;re working toward.</p>
+
+    <!-- feature: Digger Cafe -->
+    <div class="feature">
+      <img src="images/digger-rooftop.jpg" alt="Digger Cafe rooftop concept">
+      <div class="ftxt">
+        <span class="badge dream">● The dream</span>
+        <h3>The Digger Cafe destination</h3>
+        <p style="color:var(--ink-soft)">A coffee shop unlike any other &mdash; rooftop diggers, a merchandise store, and a sandpit where kids run real (kid-safe) diggers. The anchor everything else orbits.</p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card dream">
+        <img class="ph" src="images/digger-sandpit.jpg" alt="Digger sandpit">
+        <div class="body"><div class="tag">The dream</div><h3>The Digger Sandpit</h3><p>Kids (and grown-ups) operate diggers in a giant sandpit &mdash; the signature play experience.</p></div>
+      </div>
+      <div class="card dream">
+        <div class="slot"><span>📸 Photo slot &mdash; your Adirondack-chairs photos (images/chairs.jpg)</span></div>
+        <div class="body"><div class="tag">The dream</div><h3>World&rsquo;s Largest Chairs</h3><p>The Guinness World Record for the largest Adirondack chairs &mdash; an unmissable roadside landmark.</p></div>
+      </div>
+      <div class="card dream">
+        <div class="slot"><span>📸 Photo slot &mdash; Kosovo ropes-course photos (images/ropes-course.jpg)</span></div>
+        <div class="body"><div class="tag">The dream</div><h3>Sky Ropes &amp; Activity Camp</h3><p>An aerial obstacle course and acrobatic activity camp &mdash; inspired by a course we saw and loved.</p></div>
+      </div>
+      <div class="card dream">
+        <div class="slot"><span>📸 Photo slot &mdash; cornhole / mini-golf render (images/cornhole-golf.jpg)</span></div>
+        <div class="body"><div class="tag">The dream</div><h3>Mini Cornhole-Golf</h3><p>A playful mini cornhole-golf range &mdash; easy fun for every age, all summer long.</p></div>
+      </div>
+      <div class="card dream">
+        <div class="slot"><span>📸 Photo slot &mdash; goats / petting-zoo photos (images/petting-zoo.jpg)</span></div>
+        <div class="body"><div class="tag">The dream</div><h3>Petting Zoo</h3><p>Goats running around, chickens, and a petting zoo &mdash; the farm-meets-fun heart of the campus.</p></div>
+      </div>
+      <div class="card dream">
+        <img class="ph" src="images/digger-concept.jpg" alt="Digger Cafe concept">
+        <div class="body"><div class="tag">The dream</div><h3>The Whole Picture</h3><p>Cafe, play, camps, and chairs woven into one destination people drive out of their way to find.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNUP -->
+<section class="block signup" id="updates">
+  <div class="wrap">
+    <span class="eyebrow" style="color:#ffe0a8">Be part of it</span>
+    <h2>Watch it come to life.</h2>
+    <p class="sub">We&rsquo;re building this in the open. Sign up and we&rsquo;ll send you updates as each piece becomes real &mdash; new sites, the Digger Cafe, the big chairs, opening days.</p>
+    <form class="form" id="signupForm" onsubmit="return false;">
+      <div class="row">
+        <input type="text" name="name" placeholder="Your name" autocomplete="name">
+        <input type="email" name="email" placeholder="Your email" required autocomplete="email">
+      </div>
+      <label class="consent">
+        <input type="checkbox" name="marketing">
+        <span>Yes, send me Seba Hub news, event invites, and updates by email. (Optional &mdash; you can unsubscribe anytime.)</span>
+      </label>
+      <button class="btn" type="submit">Keep me posted &rsaquo;</button>
+      <p class="fineprint">We&rsquo;ll only use your email to send Seba Hub updates, and every email has a one-click unsubscribe. We never sell your information.</p>
+      <div class="ok" id="okMsg">🎉 You&rsquo;re on the list! We&rsquo;ll keep you posted as the campus comes to life.</div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:14px">
+      <img src="images/logo.webp" alt="Seba Hub">
+      <span class="sic">A Social Impact Capitalism Enterprise</span>
+    </div>
+    <div>
+      <div>Purpose with Profit. Make a Difference.</div>
+      <div style="margin-top:6px"><a href="mailto:tim@businessasaforceforgood.ca" style="color:#9fd0cd">tim@businessasaforceforgood.ca</a></div>
+    </div>
+  </div>
+  <div class="draftnote">DRAFT TEMPLATE — built to hand off to the team (Casey, Murphy, Thomas, Meg) for build-out. Photo slots marked 📸 need real images; confirm the restaurant name and the Alberta-vs-BC location wording before publishing.</div>
+</footer>
+
+<script>
+  // MVP signup handler — shows confirmation. TODO: wire to Mailchimp/ConvertKit form action for real capture.
+  document.getElementById('signupForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = this.email.value.trim();
+    if(!email){ this.email.focus(); return; }
+    document.getElementById('okMsg').style.display='block';
+    // Placeholder: replace this block with your email-platform POST (Mailchimp embedded form / ConvertKit).
+    console.log('Signup captured (prototype):', {name:this.name.value, email:email, marketing:this.marketing.checked});
+  });
+</script>
+</body>
+</html>

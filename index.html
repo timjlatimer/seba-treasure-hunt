@@ -189,7 +189,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
 @media(max-width:780px){.two{grid-template-columns:1fr}}
 
 /* graphify landing + mini section-maps */
-#landing{position:relative;height:calc(100vh - 58px);min-height:520px;border-bottom:1px solid var(--line);overflow:hidden}
+#landing{position:relative;height:calc(100vh - 92px);min-height:500px;border-bottom:1px solid var(--line);overflow:hidden}
 #landingCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;z-index:1}
 #landing .landwrap{position:absolute;left:0;bottom:0;padding:0 28px 46px;max-width:640px;pointer-events:none;z-index:2}
 #landing .landwrap .coord{margin-bottom:10px}
@@ -197,10 +197,27 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
 #landing .landsub{color:var(--cream-soft);max-width:44ch;margin:0 0 18px;text-shadow:0 1px 12px rgba(0,0,0,.5)}
 #landing .cta{pointer-events:auto}
 #landing .landhint{position:absolute;top:18px;right:24px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--gold);opacity:.8;z-index:2;text-transform:uppercase}
-#planTop{scroll-margin-top:64px}
+#planTop{scroll-margin-top:98px}
 .minihead{position:relative;height:150px;border:1px solid var(--line-soft);border-radius:14px;margin:0 0 26px;overflow:hidden;background:linear-gradient(180deg,rgba(20,51,53,.45),rgba(11,23,24,.12))}
 .minihead canvas{width:100%;height:100%;display:block}
 .minihead .minitag{position:absolute;top:9px;left:15px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);opacity:.72;pointer-events:none}
+
+/* site-as-treasure-hunt progress tracker + celebration */
+.tracker{display:flex;align-items:center;gap:12px;max-width:1280px;margin:0 auto;padding:6px 24px 9px;border-top:1px solid rgba(231,178,74,.1)}
+.tracker .tlabel{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);white-space:nowrap;flex:none}
+.tracker .pips{display:flex;gap:4px;flex:1;min-width:0}
+.tracker .pip{height:6px;flex:1;min-width:5px;border:0;border-radius:3px;background:rgba(241,231,210,.13);cursor:pointer;padding:0;transition:background .35s,box-shadow .35s}
+.tracker .pip.done{background:linear-gradient(90deg,var(--teal),var(--gold));box-shadow:0 0 7px rgba(231,178,74,.55)}
+.tracker .pip:hover{outline:1px solid var(--gold);outline-offset:1px}
+.tracker .trophy{background:none;border:0;cursor:pointer;font-size:15px;flex:none;padding:0 2px}
+#celebrate{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(7,15,16,.94);backdrop-filter:blur(3px);padding:20px}
+#celebrate.show{display:flex}
+#confettiCanvas{position:absolute;inset:0;pointer-events:none}
+#celebrate .ccard{position:relative;z-index:2;text-align:center;max-width:520px;padding:42px 34px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+#celebrate .ccard .tro{font-size:54px;line-height:1}
+#celebrate .ccard h2{font-family:var(--serif);font-size:clamp(26px,4vw,40px);color:var(--gold-bright);margin:.25em 0 .35em}
+#celebrate .ccard p{color:var(--cream-soft);font-size:16px;margin:0 0 20px}
+#celebrate .ccard .crow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -235,9 +252,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
         <a href="app-preview.html">&#128241;&nbsp; App preview</a>
         <a href="sponsor-pitch.html">&#128196;&nbsp; Sponsor one-pager</a>
         <a href="SebaHub-Treasure-Hunt-Budget.xlsx">&#128202;&nbsp; Budget (Excel)</a>
+        <a href="vision/school-future-casting.html">&#127968;&nbsp; Campus vision page</a>
       </div>
     </div>
   </div>
+  <div class="tracker" id="tracker"></div>
 </header>
 
 <main>
@@ -1023,6 +1042,69 @@ document.getElementById('sform').addEventListener('submit',function(e){e.prevent
 
 // init
 armReveals();runPrize();runCounts();
+</script>
+<div id="celebrate">
+  <canvas id="confettiCanvas"></canvas>
+  <div class="ccard">
+    <div class="tro">&#127942;</div>
+    <h2>You hunted the whole plan.</h2>
+    <p>You&rsquo;ve explored every part of the SebaHub Treasure Chest Challenge &mdash; the case, the money, the mechanics, the map. That&rsquo;s the whole treasure. Now&hellip; want to help make it real?</p>
+    <div class="crow">
+      <button class="cta" id="celebCta">I&rsquo;m in &mdash; sign me up &rarr;</button>
+      <button class="cta ghost" id="celebClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== site-as-a-treasure-hunt: progress tracker + win celebration ===== */
+(function(){
+  var TABS=['summit','case','plan','prize','ideas','brainstorm','marketing','sponsors','properties','board','precedents','numbers','ceo','better'];
+  var LBL={summit:'Summit',case:'The Case',plan:'The Plan',prize:'Prize Value',ideas:'Ideas & Scores',brainstorm:'Brainstorm',marketing:'Marketing',sponsors:'Sponsors',properties:'Properties',board:'Game Board & Rules',precedents:'Precedents',numbers:'The Numbers',ceo:'CEO Review',better:'Do It Better'};
+  var KEY='sebahunt_explored', visited={}, celebrated=false, pips={}, label, trophy;
+  try{ (JSON.parse(localStorage.getItem(KEY))||[]).forEach(function(x){visited[x]=1;}); }catch(e){}
+  function count(){ var n=0; TABS.forEach(function(t){ if(visited[t])n++; }); return n; }
+  function paintLabel(){ var n=count(); if(label) label.innerHTML = n>=TABS.length ? '&#127942; Whole plan explored' : ('Explored '+n+' / '+TABS.length); if(trophy) trophy.style.display = n>=TABS.length?'inline-block':'none'; }
+  function build(){
+    var tr=document.getElementById('tracker'); if(!tr)return;
+    label=document.createElement('span'); label.className='tlabel'; tr.appendChild(label);
+    var wrap=document.createElement('div'); wrap.className='pips';
+    TABS.forEach(function(t){ var p=document.createElement('button'); p.className='pip'+(visited[t]?' done':''); p.title=LBL[t]; p.setAttribute('aria-label','Go to '+LBL[t]); p.addEventListener('click',function(){ if(window.showTab)window.showTab(t); }); wrap.appendChild(p); pips[t]=p; });
+    tr.appendChild(wrap);
+    trophy=document.createElement('button'); trophy.className='trophy'; trophy.innerHTML='&#127942;'; trophy.title='Replay celebration'; trophy.addEventListener('click',function(){ show(); }); tr.appendChild(trophy);
+    if(count()>=TABS.length) celebrated=true; /* already complete on load -> don't auto-pop */
+    paintLabel();
+  }
+  function mark(name){
+    if(TABS.indexOf(name)<0) return;
+    var was=!!visited[name]; visited[name]=1;
+    try{ localStorage.setItem(KEY, JSON.stringify(TABS.filter(function(t){return visited[t];}))); }catch(e){}
+    if(pips[name]) pips[name].classList.add('done');
+    paintLabel();
+    if(!was && count()>=TABS.length && !celebrated){ celebrated=true; show(); }
+  }
+  function show(){ var ov=document.getElementById('celebrate'); if(!ov)return; ov.classList.add('show'); confetti(); }
+  function hide(){ var ov=document.getElementById('celebrate'); if(ov)ov.classList.remove('show'); }
+  function confetti(){
+    var cv=document.getElementById('confettiCanvas'); if(!cv)return; var ctx=cv.getContext('2d');
+    cv.width=window.innerWidth; cv.height=window.innerHeight;
+    var cols=['#e7b24a','#f6cd6e','#2a8a92','#f1e7d2','#c8643a'], P=[];
+    for(var i=0;i<170;i++) P.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*0.6,r:3+Math.random()*5,c:cols[i%cols.length],vy:2+Math.random()*4,vx:-2+Math.random()*4,a:Math.random()*6.283,va:-0.2+Math.random()*0.4});
+    var t0=Date.now();
+    (function frame(){ ctx.clearRect(0,0,cv.width,cv.height);
+      P.forEach(function(p){ p.x+=p.vx;p.y+=p.vy;p.a+=p.va; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle=p.c; ctx.fillRect(-p.r,-p.r,p.r*2,p.r*1.2); ctx.restore(); });
+      if(Date.now()-t0<5400) requestAnimationFrame(frame); else ctx.clearRect(0,0,cv.width,cv.height);
+    })();
+  }
+  function boot(){
+    build();
+    var old=window.__onTab; window.__onTab=function(n){ if(old)old(n); mark(n); };
+    mark('summit');
+    var cl=document.getElementById('celebClose'); if(cl)cl.addEventListener('click',hide);
+    var cc=document.getElementById('celebCta'); if(cc)cc.addEventListener('click',function(){ hide(); if(window.showTab)window.showTab('summit'); var u=document.getElementById('updates'); if(u)setTimeout(function(){u.scrollIntoView();},60); });
+  }
+  if(document.readyState!=='loading') boot(); else document.addEventListener('DOMContentLoaded',boot);
+})();
 </script>
 </body>
 </html>
