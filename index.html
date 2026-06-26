@@ -1066,8 +1066,7 @@ armReveals();runPrize();runCounts();
 (function(){
   var TABS=['summit','case','plan','prize','ideas','brainstorm','marketing','sponsors','properties','board','precedents','numbers','ceo','better'];
   var LBL={summit:'Summit',case:'The Case',plan:'The Plan',prize:'Prize Value',ideas:'Ideas & Scores',brainstorm:'Brainstorm',marketing:'Marketing',sponsors:'Sponsors',properties:'Properties',board:'Game Board & Rules',precedents:'Precedents',numbers:'The Numbers',ceo:'CEO Review',better:'Do It Better'};
-  var KEY='sebahunt_explored', visited={}, celebrated=false, pips={}, label, trophy;
-  try{ (JSON.parse(localStorage.getItem(KEY))||[]).forEach(function(x){visited[x]=1;}); }catch(e){}
+  var visited={}, celebrated=false, pips={}, label, trophy; /* in-memory only: the racetrack resets on every visit */
   function count(){ var n=0; TABS.forEach(function(t){ if(visited[t])n++; }); return n; }
   function paintLabel(){ var n=count(); if(label) label.innerHTML = n>=TABS.length ? '&#127942; Whole plan explored' : ('Explored '+n+' / '+TABS.length); if(trophy) trophy.style.display = n>=TABS.length?'inline-block':'none'; }
   function build(){
@@ -1083,7 +1082,6 @@ armReveals();runPrize();runCounts();
   function mark(name){
     if(TABS.indexOf(name)<0) return;
     var was=!!visited[name]; visited[name]=1;
-    try{ localStorage.setItem(KEY, JSON.stringify(TABS.filter(function(t){return visited[t];}))); }catch(e){}
     if(pips[name]) pips[name].classList.add('done');
     paintLabel();
     if(!was && count()>=TABS.length && !celebrated){ celebrated=true; show(); }
