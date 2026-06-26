@@ -179,6 +179,20 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
 .note{background:rgba(231,178,74,.08);border:1px dashed var(--line);border-radius:12px;padding:12px 18px;font-family:var(--mono);font-size:12px;color:var(--cream-soft);margin-top:18px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:34px}
 @media(max-width:780px){.two{grid-template-columns:1fr}}
+
+/* graphify landing + mini section-maps */
+#landing{position:relative;height:calc(100vh - 58px);min-height:520px;border-bottom:1px solid var(--line);overflow:hidden}
+#landingCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;z-index:1}
+#landing .landwrap{position:absolute;left:0;bottom:0;padding:0 28px 46px;max-width:640px;pointer-events:none;z-index:2}
+#landing .landwrap .coord{margin-bottom:10px}
+#landing .landtitle{font-family:var(--serif);font-size:clamp(30px,5vw,54px);line-height:1.04;margin:.15em 0 .25em;text-shadow:0 2px 24px rgba(0,0,0,.5)}
+#landing .landsub{color:var(--cream-soft);max-width:44ch;margin:0 0 18px;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+#landing .cta{pointer-events:auto}
+#landing .landhint{position:absolute;top:18px;right:24px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--gold);opacity:.8;z-index:2;text-transform:uppercase}
+#planTop{scroll-margin-top:64px}
+.minihead{position:relative;height:150px;border:1px solid var(--line-soft);border-radius:14px;margin:0 0 26px;overflow:hidden;background:linear-gradient(180deg,rgba(20,51,53,.45),rgba(11,23,24,.12))}
+.minihead canvas{width:100%;height:100%;display:block}
+.minihead .minitag{position:absolute;top:9px;left:15px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);opacity:.72;pointer-events:none}
 </style>
 </head>
 <body>
@@ -210,6 +224,19 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
 </header>
 
 <main>
+
+<!-- ================= LANDING GRAPH ================= -->
+<section id="landing">
+  <canvas id="landingCanvas"></canvas>
+  <div class="landhint">&#9670; drag &middot; click a node to explore</div>
+  <div class="landwrap">
+    <span class="coord">The whole plan, mapped</span>
+    <h1 class="landtitle">Every piece of the hunt &mdash; one map.</h1>
+    <p class="landsub">Drag the nodes. Click any one to dive into that part of the plan &mdash; or enter from the top.</p>
+    <a class="cta" id="enterBtn">Enter the plan &rarr;</a>
+  </div>
+</section>
+<div id="planTop"></div>
 
 <!-- ================= SUMMIT / EXEC SUMMARY ================= -->
 <section class="tab on" id="tab-summit">
@@ -782,6 +809,114 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
 </main>
 
 <script>
+/* ===== graphify-style constellation engine (vanilla canvas) ===== */
+(function(){
+  var GOLD='#e7b24a', GOLDB='#f6cd6e', TEAL='#2a8a92', CREAM='#f1e7d2';
+  function Graph(canvas, data, opt){
+    opt=opt||{}; var ctx=canvas.getContext('2d');
+    var W=0,H=0,DPR=1,raf=null,hover=-1,drag=-1,downIdx=-1,downPt=null,seeded=false;
+    var nodes=data.nodes.map(function(n){return Object.assign({x:0,y:0,vx:0,vy:0},n);});
+    var id2={}; nodes.forEach(function(n,i){id2[n.id]=i;});
+    var edges=data.edges.map(function(e){return {a:id2[e[0]],b:id2[e[1]]};}).filter(function(e){return e.a!=null&&e.b!=null;});
+    function size(){
+      DPR=Math.min(window.devicePixelRatio||1,2);
+      var r=canvas.getBoundingClientRect(); W=r.width||300; H=r.height||150;
+      canvas.width=W*DPR; canvas.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0);
+      if(!seeded){ var R=Math.min(W,H)*0.34; nodes.forEach(function(n,i){ if(n.center){n.x=W/2;n.y=H/2;} else {var a=i/nodes.length*6.283; n.x=W/2+Math.cos(a)*R; n.y=H/2+Math.sin(a)*R;} }); seeded=true; }
+    }
+    function step(){
+      for(var i=0;i<nodes.length;i++)for(var j=i+1;j<nodes.length;j++){
+        var a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy||0.01,d=Math.sqrt(d2);
+        var f=(opt.repel||2200)/d2,fx=dx/d*f,fy=dy/d*f; a.vx+=fx;a.vy+=fy;b.vx-=fx;b.vy-=fy;
+      }
+      edges.forEach(function(e){ var a=nodes[e.a],b=nodes[e.b],dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)||0.01; var f=(d-(opt.link||80))*0.02,fx=dx/d*f,fy=dy/d*f; a.vx+=fx;a.vy+=fy;b.vx-=fx;b.vy-=fy; });
+      nodes.forEach(function(n){ var g=n.center?0.02:0.004; n.vx+=(W/2-n.x)*g; n.vy+=(H/2-n.y)*g; });
+      var pad=opt.pad||22;
+      nodes.forEach(function(n,i){ if(i===drag)return; n.vx*=0.85;n.vy*=0.85; n.x+=n.vx;n.y+=n.vy; n.x=Math.max(pad,Math.min(W-pad,n.x)); n.y=Math.max(pad,Math.min(H-pad,n.y)); });
+    }
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      edges.forEach(function(e){ var a=nodes[e.a],b=nodes[e.b],on=hover>=0&&(e.a===hover||e.b===hover);
+        ctx.strokeStyle=on?'rgba(246,205,110,.85)':'rgba(231,178,74,.18)'; ctx.lineWidth=on?1.6:0.8; ctx.setLineDash(on?[]:[3,5]);
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); });
+      ctx.setLineDash([]);
+      nodes.forEach(function(n,i){ var r=n.center?(opt.big?10:7):(opt.minR||4), c=n.center?GOLDB:(n.kind==='concept'?TEAL:GOLD);
+        var g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,r*3.6); g.addColorStop(0,c+'77'); g.addColorStop(1,c+'00');
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(n.x,n.y,r*3.6,0,6.283); ctx.fill();
+        ctx.fillStyle=c; ctx.beginPath(); ctx.arc(n.x,n.y,r,0,6.283); ctx.fill();
+        if(i===hover){ ctx.strokeStyle=CREAM; ctx.lineWidth=1.4; ctx.beginPath(); ctx.arc(n.x,n.y,r+3,0,6.283); ctx.stroke(); }
+        if(opt.labels){ ctx.font=(n.center?'600 '+(opt.big?13:11)+'px ':(opt.big?12:9.5)+'px ')+"'Spline Sans',sans-serif";
+          ctx.fillStyle=i===hover?CREAM:'rgba(241,231,210,'+(n.center?0.92:0.66)+')'; ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText(n.label, n.x, n.y-r-(opt.big?12:8)); } });
+    }
+    function frame(){ step(); draw(); raf=requestAnimationFrame(frame); }
+    function P(ev){ var r=canvas.getBoundingClientRect(); return {x:ev.clientX-r.left,y:ev.clientY-r.top}; }
+    function pick(p){ for(var i=0;i<nodes.length;i++){ var n=nodes[i],r=(n.center?10:(opt.minR||4))+7; if((p.x-n.x)*(p.x-n.x)+(p.y-n.y)*(p.y-n.y)<r*r)return i; } return -1; }
+    if(opt.interactive){
+      canvas.addEventListener('pointermove',function(e){ var p=P(e); if(drag>=0){nodes[drag].x=p.x;nodes[drag].y=p.y;nodes[drag].vx=0;nodes[drag].vy=0;return;} hover=pick(p); canvas.style.cursor=hover>=0?'pointer':'grab'; });
+      canvas.addEventListener('pointerdown',function(e){ var p=P(e); downPt=p; downIdx=pick(p); if(downIdx>=0){drag=downIdx; try{canvas.setPointerCapture(e.pointerId);}catch(_){}}});
+      canvas.addEventListener('pointerup',function(e){ var p=P(e),moved=downPt?Math.hypot(p.x-downPt.x,p.y-downPt.y):99; if(downIdx>=0&&moved<6){ var n=nodes[downIdx]; if(n.tab&&opt.onNode)opt.onNode(n); } drag=-1;downIdx=-1; });
+      canvas.addEventListener('pointerleave',function(){ hover=-1; });
+    }
+    return { start:function(){ size(); if(!raf)frame(); }, stop:function(){ if(raf){cancelAnimationFrame(raf);raf=null;} }, resize:function(){ size(); } };
+  }
+
+  var LANDING={ nodes:[
+    {id:'hub',label:'The Hunt',center:true},
+    {id:'case',label:'The Case',tab:'case'},{id:'plan',label:'The Plan',tab:'plan'},
+    {id:'prize',label:'Prize Value',tab:'prize'},{id:'ideas',label:'Ideas',tab:'ideas'},
+    {id:'brainstorm',label:'Brainstorm',tab:'brainstorm'},{id:'marketing',label:'Marketing',tab:'marketing'},
+    {id:'sponsors',label:'Sponsors',tab:'sponsors'},{id:'properties',label:'Properties',tab:'properties'},
+    {id:'board',label:'Game Board',tab:'board'},{id:'precedents',label:'Precedents',tab:'precedents'},
+    {id:'numbers',label:'The Numbers',tab:'numbers'},{id:'ceo',label:'CEO Review',tab:'ceo'},
+    {id:'better',label:'Do It Better',tab:'better'} ],
+    edges:[['hub','case'],['hub','plan'],['hub','prize'],['hub','ideas'],['hub','brainstorm'],['hub','marketing'],['hub','sponsors'],['hub','properties'],['hub','board'],['hub','precedents'],['hub','numbers'],['hub','ceo'],['hub','better'],
+      ['plan','prize'],['plan','numbers'],['prize','sponsors'],['sponsors','marketing'],['marketing','properties'],['board','properties'],['numbers','ceo'],['ideas','brainstorm'],['precedents','case'],['better','board']] };
+
+  var CENTER={ case:'Why',plan:'The Plan',prize:'Prize',ideas:'Ideas',brainstorm:'Brainstorm',marketing:'Marketing',sponsors:'Sponsors',properties:'Properties',board:'Game Board',precedents:'Precedents',numbers:'The Numbers',ceo:'CEO Review',better:'Do It Better' };
+  var SPOKES={
+    case:['Cheap Traffic','Owned List','Sponsor Budget','A Destination','Annual to Franchise'],
+    plan:['Golden Rule','Sponsor Prize','3 Streams','Blue Seal','Trust Engine','Timeline'],
+    prize:['$10k','$15k','$20k','$25k','Rising Floor','Secondary'],
+    ideas:['Ship','Test','Park','Kill','Scored /20'],
+    brainstorm:['Grow the Prize','Thread Property','Ambassadors','Free Press','Kid Hunt','The Rubric'],
+    marketing:['The Drumbeat','The Funnel','Channels','Spectacular','Sponsors = Media'],
+    sponsors:['Drumbeat','Logo Everywhere','Goodwill','Owned Audience','Anchor','Blue Seal'],
+    properties:['Seba Hub','The School','Kokanee RV','Digger Cafe','The Moose','Wedding Venue'],
+    board:['The Map','The Chaser','Planner','Live Tracker','The Rules','8am-9pm'],
+    precedents:['Skydrop','Forrest Fenn','Masquerade','Geocaching','Golden Owl'],
+    numbers:['Cost ~$40k','Value ~$150k','~4:1 ROI','Earned Media','The List','On-site Spend'],
+    ceo:['The Bet','5 Hard Qs','The Risks','Conditional GO','3 Gates'],
+    better:['Loop V13','Move 37s','Jobs To Be Done','AI Runs It','AI Scales It']
+  };
+  function miniData(id){ var ns=[{id:'c',label:CENTER[id],center:true}], es=[]; SPOKES[id].forEach(function(s,i){ ns.push({id:'s'+i,label:s,kind:'concept'}); es.push(['c','s'+i]); }); return {nodes:ns,edges:es}; }
+
+  var reg={};
+  function boot(){
+    var lc=document.getElementById('landingCanvas');
+    if(lc){
+      reg.landing=Graph(lc,LANDING,{interactive:true,labels:true,big:true,repel:7000,link:130,minR:6,pad:48,onNode:function(n){ if(n.tab&&window.showTab) window.showTab(n.tab); }});
+      if('IntersectionObserver' in window){ new IntersectionObserver(function(es){es.forEach(function(e){ e.isIntersecting?reg.landing.start():reg.landing.stop(); });},{threshold:0.04}).observe(lc); }
+      else reg.landing.start();
+    }
+    document.querySelectorAll('main .tab').forEach(function(sec){
+      var id=sec.id.replace('tab-',''); if(id==='summit'||!SPOKES[id])return;
+      var wrap=sec.querySelector('.wrap'); if(!wrap)return;
+      var head=document.createElement('div'); head.className='minihead';
+      var cv=document.createElement('canvas'); head.appendChild(cv);
+      var tag=document.createElement('span'); tag.className='minitag'; tag.textContent='◆ map of this section'; head.appendChild(tag);
+      wrap.insertBefore(head, wrap.firstChild);
+      reg[id]=Graph(cv,miniData(id),{labels:true,repel:2600,link:80,minR:4,pad:30});
+    });
+    window.__onTab=function(name){ Object.keys(reg).forEach(function(k){ if(k!=='landing'&&k!==name&&reg[k])reg[k].stop(); }); if(reg[name]) setTimeout(function(){reg[name].start();},40); };
+    var eb=document.getElementById('enterBtn'); if(eb)eb.addEventListener('click',function(){ var pt=document.getElementById('planTop'); if(pt)pt.scrollIntoView({block:'start'}); });
+    var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(function(){ Object.keys(reg).forEach(function(k){ if(reg[k]&&reg[k].resize)reg[k].resize(); }); },200); });
+  }
+  if(document.readyState!=='loading') boot(); else document.addEventListener('DOMContentLoaded',boot);
+})();
+</script>
+
+<script>
 // ---------- ideas data ----------
 const IDEAS=[
  {t:"Sponsor-funded rising prize",d:"The prize climbs in public as sponsors join — the media drumbeat.",s:[5,4,5,5],v:"ship"},
@@ -833,10 +968,13 @@ const tabBtns=[...document.querySelectorAll('#tabs button')];
 function show(name){
   document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+name));
   tabBtns.forEach(b=>b.classList.toggle('on',b.dataset.t===name));
-  window.scrollTo({top:0,behavior:'instant'});
+  var pt=document.getElementById('planTop');
+  if(pt){ pt.scrollIntoView({block:'start'}); } else { window.scrollTo({top:0}); }
   setTimeout(armReveals,30);
+  if(window.__onTab) window.__onTab(name);
   if(name==='summit'){runPrize();runCounts();}
 }
+window.showTab=show;
 tabBtns.forEach(b=>b.addEventListener('click',()=>show(b.dataset.t)));
 document.querySelectorAll('[data-go]').forEach(a=>a.addEventListener('click',()=>show(a.dataset.go)));
 
