@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SebaHub Treasure Chest Challenge — Field Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Spline+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --abyss:#0b1718; --pine:#10282a; --panel:#143335; --panel2:#0e2122;
+  --teal:#2a8a92; --teal-deep:#15565d; --moss:#3f8f63;
+  --gold:#e7b24a; --gold-bright:#f6cd6e; --gold-deep:#b9821a; --rust:#c8643a;
+  --cream:#f1e7d2; --cream-soft:#d8cdb4; --parch:#e9dcbf; --parch-ink:#2c2417;
+  --line:rgba(231,178,74,.22); --line-soft:rgba(241,231,210,.12);
+  --live:#5fcf8b; --coming:#f1b542; --dream:#b79cf0;
+  --ship:#5fcf8b; --test:#f1b542; --park:#79b8c4; --kill:#d9694a;
+  --serif:"Fraunces",Georgia,serif; --sans:"Spline Sans",system-ui,sans-serif; --mono:"Space Mono",monospace;
+  --shadow:0 24px 60px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--abyss);color:var(--cream);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{ /* grain */
+  content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.1;margin:0 0 .45em;letter-spacing:-.01em}
+p{margin:0 0 1em}
+a{color:var(--gold)}
+.mono{font-family:var(--mono)}
+.coord{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.85}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.lead{font-size:clamp(18px,2.1vw,22px);color:var(--cream-soft);max-width:62ch}
+
+/* contour atmosphere */
+.topo{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background:
+   radial-gradient(circle at 78% 12%, rgba(42,138,146,.16), transparent 38%),
+   radial-gradient(circle at 12% 88%, rgba(63,143,99,.12), transparent 42%),
+   radial-gradient(1200px 1200px at 85% -10%, rgba(231,178,74,.06), transparent 60%);}
+.topo::after{content:"";position:absolute;inset:0;opacity:.10;
+  background-image:repeating-radial-gradient(circle at 80% 20%, transparent 0 38px, rgba(231,178,74,.5) 38px 39px);}
+
+/* NAV */
+header.nav{position:sticky;top:0;z-index:100;background:rgba(11,23,24,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;gap:18px;max-width:1280px;margin:0 auto;padding:12px 24px}
+.brand{display:flex;align-items:center;gap:12px;flex:none}
+.brand img{height:30px}
+.brand .bt{font-family:var(--serif);font-weight:600;font-size:18px;color:var(--cream)}
+.brand .bt small{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-top:1px}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-left:auto;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;background:none;border:0;color:var(--cream-soft);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:9px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:.18s;position:relative}
+.tabs button:hover{color:var(--cream);background:rgba(231,178,74,.08)}
+.tabs button.on{color:var(--abyss);background:var(--gold)}
+
+/* TAB PANELS */
+main{position:relative;z-index:1}
+.tab{display:none;animation:fade .5s ease both}
+.tab.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* section scaffolding */
+.band{padding:84px 0}
+.band.tight{padding:54px 0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:inline-flex;gap:10px;align-items:center;margin-bottom:14px}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--gold);display:inline-block}
+.band h2{font-size:clamp(30px,4.4vw,52px)}
+.band h3{font-size:clamp(21px,2.4vw,27px);color:var(--gold-bright)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:0}
+
+/* HERO */
+.hero{position:relative;min-height:90vh;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero .bg{position:absolute;inset:0;background:url("images/aerial.jpg") center/cover;filter:saturate(.9) brightness(.5)}
+.hero .veil{position:absolute;inset:0;background:linear-gradient(120deg,rgba(11,23,24,.94) 30%,rgba(11,23,24,.6) 70%,rgba(11,23,24,.85))}
+.hero .ring{position:absolute;right:-160px;top:50%;transform:translateY(-50%);width:680px;height:680px;border-radius:50%;border:1px dashed rgba(231,178,74,.4);display:grid;place-items:center;animation:spin 80s linear infinite}
+.hero .ring::before{content:"";position:absolute;width:480px;height:480px;border-radius:50%;border:1px dashed rgba(231,178,74,.3);animation:pulse 6s ease-in-out infinite}
+.hero .ring::after{content:"✕";color:var(--gold);font-size:34px;font-family:var(--mono)}
+@keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(.62);opacity:1}}
+.hero .wrap{position:relative;z-index:2;padding-top:60px;padding-bottom:60px}
+.hero h1{font-size:clamp(40px,7vw,86px);line-height:.98;max-width:15ch;margin-bottom:.3em}
+.hero h1 em{font-style:italic;color:var(--gold-bright)}
+.kick{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);border-radius:999px;padding:7px 16px;margin-bottom:26px}
+.hero .lead{margin-top:8px}
+.prizebox{display:flex;gap:30px;flex-wrap:wrap;margin:34px 0 30px;align-items:flex-end}
+.prizebox .pz{font-family:var(--serif);font-weight:900;font-size:clamp(40px,6vw,64px);color:var(--gold-bright);line-height:1}
+.prizebox .pl{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--cream-soft);max-width:24ch}
+.cta{display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:#2a1c03;font-weight:700;font-family:var(--sans);border:0;border-radius:999px;padding:14px 26px;text-decoration:none;cursor:pointer;font-size:15.5px;transition:.18s}
+.cta:hover{background:var(--gold-bright);transform:translateY(-2px);box-shadow:0 12px 26px rgba(231,178,74,.3)}
+.cta.ghost{background:transparent;color:var(--gold);border:1px solid var(--line)}
+.cta.ghost:hover{background:rgba(231,178,74,.08);box-shadow:none}
+
+/* generic cards / grids */
+.cards{display:grid;gap:22px;margin-top:34px}
+.c2{grid-template-columns:repeat(2,1fr)} .c3{grid-template-columns:repeat(3,1fr)} .c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.c3,.c4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.c2,.c3,.c4{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line-soft);border-radius:16px;padding:26px;position:relative;overflow:hidden;transition:.2s}
+.card:hover{transform:translateY(-4px);border-color:var(--line);box-shadow:var(--shadow)}
+.card .n{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.14em}
+.card h4{font-size:19px;color:var(--cream);margin:.5em 0 .35em}
+.card p{color:var(--cream-soft);font-size:15px;margin:0}
+.card.photo{padding:0}
+.card.photo img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;filter:saturate(.95)}
+.card.photo .pad{padding:22px 24px 26px}
+.imgslot{aspect-ratio:16/10;display:grid;place-items:center;text-align:center;color:#9b8f73;font-family:var(--mono);font-size:11.5px;padding:16px;
+  background:repeating-linear-gradient(45deg,#16322f,#16322f 12px,#173a36 12px,#173a36 24px);border-bottom:1px dashed rgba(231,178,74,.3)}
+
+/* stat strip */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);border-radius:16px;overflow:hidden;margin-top:30px}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--panel2);padding:24px 22px}
+.stat .v{font-family:var(--serif);font-weight:900;font-size:34px;color:var(--gold-bright);line-height:1}
+.stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--cream-soft);margin-top:8px}
+
+/* trail list */
+.trail{list-style:none;padding:0;margin:24px 0 0;position:relative}
+.trail li{position:relative;padding:0 0 26px 40px;border-left:1px dashed var(--line);margin-left:10px}
+.trail li::before{content:"";position:absolute;left:-7px;top:2px;width:13px;height:13px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(231,178,74,.16)}
+.trail li:last-child{border-left-color:transparent}
+.trail li h4{margin:0 0 .25em;color:var(--cream);font-size:18px}
+.trail li .when{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.1em}
+.trail li p{color:var(--cream-soft);font-size:15px;margin:.3em 0 0}
+
+/* scored ideas */
+.legendbar{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;font-family:var(--mono);font-size:11.5px;color:var(--cream-soft)}
+.tagv{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;padding:4px 10px;border-radius:999px;text-transform:uppercase}
+.v-ship{background:rgba(95,207,139,.16);color:var(--ship)} .v-test{background:rgba(241,181,66,.16);color:var(--test)}
+.v-park{background:rgba(121,184,196,.16);color:var(--park)} .v-kill{background:rgba(217,105,74,.18);color:var(--kill)}
+.idea{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px}
+.idea:hover{border-color:var(--line)}
+.idea .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.idea h4{font-size:17.5px;margin:0 0 .3em;color:var(--cream)}
+.idea p{font-size:13.5px;color:var(--cream-soft);margin:.2em 0 14px}
+.score{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-family:var(--mono);font-size:10.5px;color:var(--cream-soft);align-items:center}
+.bar{height:6px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--gold))}
+.idea .tot{font-family:var(--serif);font-weight:900;color:var(--gold-bright);font-size:20px}
+
+/* feature row */
+.feat{display:grid;grid-template-columns:1.05fr .95fr;gap:0;border:1px solid var(--line-soft);border-radius:18px;overflow:hidden;margin-top:30px;background:var(--panel2)}
+.feat img{width:100%;height:100%;min-height:320px;object-fit:cover}
+.feat .t{padding:40px}
+@media(max-width:780px){.feat{grid-template-columns:1fr}}
+
+/* parchment block (CEO / business plan accents) */
+.parch{background:var(--parch);color:var(--parch-ink);border-radius:18px;padding:38px 40px;margin-top:30px;position:relative;box-shadow:var(--shadow)}
+.parch::after{content:"";position:absolute;inset:8px;border:1px solid rgba(44,36,23,.18);border-radius:12px;pointer-events:none}
+.parch h3{color:var(--parch-ink)} .parch p{color:#4a3f2a}
+.parch .stamp{position:absolute;top:22px;right:28px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--rust);border:2px solid var(--rust);border-radius:8px;padding:6px 12px;transform:rotate(6deg);text-transform:uppercase;opacity:.85}
+.parch ul{margin:.4em 0 0;padding-left:0;list-style:none}
+.parch li{padding:7px 0 7px 26px;position:relative;color:#42371f}
+.parch li::before{content:"✕";position:absolute;left:0;color:var(--rust);font-family:var(--mono);font-size:13px}
+
+/* pill row */
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.pill{font-family:var(--mono);font-size:11.5px;color:var(--cream-soft);border:1px solid var(--line-soft);border-radius:999px;padding:7px 14px}
+.pill b{color:var(--gold)}
+
+/* callout */
+.callout{border-left:3px solid var(--gold);background:rgba(231,178,74,.06);padding:18px 24px;border-radius:0 12px 12px 0;margin:24px 0;font-size:16px;color:var(--cream)}
+
+/* form */
+.form{background:linear-gradient(160deg,var(--teal-deep),var(--pine));border:1px solid var(--line);border-radius:18px;padding:30px;max-width:640px;margin-top:26px}
+.form .row{display:flex;gap:12px;flex-wrap:wrap}
+.form input{flex:1;min-width:200px;padding:13px 15px;border-radius:10px;border:1px solid var(--line-soft);background:rgba(255,255,255,.95);color:#1a1a1a;font-family:var(--sans);font-size:15px}
+.form .ch{display:flex;gap:10px;align-items:flex-start;margin:14px 0;font-size:13.5px;color:var(--cream-soft)}
+.form .ch input{flex:none;width:18px;height:18px;margin-top:3px}
+
+/* reveal on scroll */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--cream-soft);font-size:13.5px}
+footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
+.note{background:rgba(231,178,74,.08);border:1px dashed var(--line);border-radius:12px;padding:12px 18px;font-family:var(--mono);font-size:12px;color:var(--cream-soft);margin-top:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+@media(max-width:780px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="topo"></div>
+
+<header class="nav">
+  <div class="nav-in">
+    <div class="brand">
+      <img src="images/logo.webp" alt="Seba Hub">
+      <div class="bt">Treasure Chest Challenge<small>Field Plan · Seba Beach</small></div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-t="summit" class="on">◆ Summit</button>
+      <button data-t="case">The Case</button>
+      <button data-t="plan">The Plan</button>
+      <button data-t="prize">Prize Value</button>
+      <button data-t="ideas">Ideas &amp; Scores</button>
+      <button data-t="brainstorm">Brainstorm</button>
+      <button data-t="marketing">Marketing</button>
+      <button data-t="sponsors">Sponsors</button>
+      <button data-t="properties">Properties</button>
+      <button data-t="board">Game Board &amp; Rules</button>
+      <button data-t="precedents">Precedents</button>
+      <button data-t="numbers">The Numbers</button>
+      <button data-t="ceo">CEO Review</button>
+      <button data-t="better">Do It Better</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= SUMMIT / EXEC SUMMARY ================= -->
+<section class="tab on" id="tab-summit">
+  <div class="hero">
+    <div class="bg"></div><div class="veil"></div><div class="ring"></div>
+    <div class="wrap">
+      <span class="kick">Executive Summary · Confidential Draft · June 2026</span>
+      <h1>Hide a <em>treasure</em>. Wake up a region.</h1>
+      <p class="lead">A multi-week, skill-based outdoor treasure hunt with a visibly rising, sponsor-funded prize — engineered as the front door to every property Business as a Force for Good owns on Seba Beach.</p>
+      <div class="prizebox">
+        <div><div class="pz" id="prizeCount">$0</div><div class="pl">Starting prize — rises every day a new sponsor joins</div></div>
+        <div><div class="pz">3 in 1</div><div class="pl">A contest, a media engine, and an owned audience</div></div>
+      </div>
+      <a class="cta" data-go="case">Why we should do this →</a>
+      <a class="cta ghost" data-go="plan" style="margin-left:10px">See the plan</a>
+    </div>
+  </div>
+
+  <div class="band tight">
+    <div class="wrap">
+      <span class="eyebrow rv">Finding 00 · the one-paragraph version</span>
+      <p class="lead rv" style="max-width:80ch;font-size:clamp(19px,2.3vw,25px);color:var(--cream)">
+        We don&rsquo;t run a contest to win money. We run a <b>skill</b> hunt where the prize is <b>given by sponsors</b>, entry is <b>free</b>, and the real treasure we keep is a <b>town-sized email list</b> and a flood of highway traffic to Kokanee, the wedding venue, the Digger Cafe and the school. The prize grows in public — &ldquo;now $14,000&hellip; now $21,000&rdquo; — and that growth <em>is</em> the marketing.
+      </p>
+      <div class="stats rv">
+        <div class="stat"><div class="v" data-count="200">0</div><div class="k">RV families on the lake today</div></div>
+        <div class="stat"><div class="v" data-count="200">0</div><div class="k">new sites coming in the back forty</div></div>
+        <div class="stat"><div class="v">$0</div><div class="k">player money funding the prize — by design</div></div>
+        <div class="stat"><div class="v">1</div><div class="k">owned audience we keep forever</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="band tight"><div class="wrap">
+    <span class="eyebrow rv">Finding 01 · what&rsquo;s on the table</span>
+    <h2 class="rv">The whole thing, on one page.</h2>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">THE GAME</div><h4>Skill, not luck</h4><p>Clue-solving, puzzles, checkpoints and judge verification decide the winner. A shrinking-circle map narrows the search and builds the drama. The chest reveal is ceremony, not the deciding mechanic.</p></div>
+      <div class="card rv"><div class="n">THE MONEY</div><h4>Sponsors fund the prize</h4><p>A dealership&rsquo;s car-for-a-year, an RV + a season&rsquo;s stay, a dream wedding, and a cash pot that starts at $10k and climbs as sponsors pile on for the exposure. Players never fund the prize.</p></div>
+      <div class="card rv"><div class="n">THE PAYOFF</div><h4>Traffic + an owned list</h4><p>Every entrant, candy-clue grabber and open-house visitor opts into the newsletter. That list — and the foot traffic to all our properties — is the asset that outlives the hunt.</p></div>
+    </div>
+    <div class="callout rv">⚖️ <b>The legal spine in one line:</b> free entry removes &ldquo;consideration,&rdquo; a pure-skill win removes &ldquo;chance,&rdquo; and a real, disclosed prize removes deception — so it cannot be an illegal lottery under Alberta&rsquo;s rules. <span class="mono" style="color:var(--gold)">(AGLC confirmation still pending — see CEO Review.)</span></div>
+  </div></div>
+</section>
+
+<!-- ================= THE CASE ================= -->
+<section class="tab" id="tab-case">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 02 · N 53° W 114°</span>
+    <h2 class="rv">Why we should do this.</h2>
+    <p class="lead rv">A campground markets a campground. A treasure hunt markets a <em>movement</em> — and pulls thousands of people off the highway to find out what we&rsquo;re building.</p>
+    <div class="cards c2">
+      <div class="card rv"><div class="n">REASON 01</div><h4>It is the cheapest traffic we will ever buy</h4><p>The same job as the battling-moose landmark: stop the car. A rising-prize mystery is a reason to drive out — again and again, over weeks — at a fraction of the cost of ads, and it earns press for free.</p></div>
+      <div class="card rv"><div class="n">REASON 02</div><h4>The email list is the real treasure</h4><p>Facebook rents you an audience. A hunt <em>builds</em> you one you own — every property&rsquo;s future customers, captured once, marketed to forever. In a town of ~1,200, an owned regional list is priceless.</p></div>
+      <div class="card rv"><div class="n">REASON 03</div><h4>It turns sponsors into a marketing budget</h4><p>Local businesses pay — in cars, RVs, cash — for the privilege of being part of the story. Their money funds the prize; their logos fund the reach. We hold the megaphone.</p></div>
+      <div class="card rv"><div class="n">REASON 04</div><h4>It makes the whole campus a destination</h4><p>The hunt threads the school, the RV park, the Digger Cafe, the driving range and the wedding venue into one experience. Suddenly we&rsquo;re not five businesses — we&rsquo;re one place worth visiting.</p></div>
+    </div>
+
+    <div class="feat rv">
+      <img src="images/aerial.jpg" alt="Seba Beach from the air">
+      <div class="t">
+        <span class="eyebrow">If we did it every year…</span>
+        <h3>Year one is a campaign. Year five is a franchise.</h3>
+        <p class="lead" style="font-size:18px">Run annually, the hunt compounds. Each year the list doubles, the sponsors get bigger, the prize climbs, and the press writes the story before we ask. &ldquo;The Seba Hunt&rdquo; becomes a fixture people plan their summer around — the way towns build a fall fair or a Santa parade, except this one is a customer-acquisition engine wearing a treasure map.</p>
+        <div class="pills">
+          <span class="pill">Yr 1 · <b>prove it</b> — one hunt, one list</span>
+          <span class="pill">Yr 2–3 · <b>the brand</b> — bigger sponsors, regional press</span>
+          <span class="pill">Yr 5 · <b>the franchise</b> — license the format to other towns</span>
+        </div>
+      </div>
+    </div>
+    <div class="callout rv">📈 <b>The compounding bet:</b> if each annual hunt adds even 2,000 opted-in households and a weekend of regional press, in five years SebaHub owns the largest engaged audience in the lake country — and a repeatable event other communities pay us to run.</div>
+  </div></div>
+</section>
+
+<!-- ================= THE PLAN ================= -->
+<section class="tab" id="tab-plan">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 03 · the business plan</span>
+    <h2 class="rv">How we actually run it.</h2>
+
+    <h3 class="rv" style="margin-top:30px">1 · The Golden Rule (the compliance spine)</h3>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">FREE = NO CONSIDERATION</div><h4>Always a free way in</h4><p>Register free online or grab a free clue-candy at the store. Nobody pays to enter or to improve their odds.</p></div>
+      <div class="card rv"><div class="n">SKILL = NO CHANCE</div><h4>Skill decides the winner</h4><p>Puzzles, checkpoints, judge verification. No luck in <em>who wins</em>. The chest reveal is ceremony.</p></div>
+      <div class="card rv"><div class="n">REAL PRIZE = NO DECEPTION</div><h4>The treasure is real &amp; proven</h4><p>Documented, third-party-sealed, with a published end date and a stated outcome if it&rsquo;s unfound.</p></div>
+    </div>
+    <div class="callout rv">🔐 <b>The one rule under all the others:</b> keep the money that <b>funds the prize</b> (sponsors) completely separate from the money <b>participants pay</b> (real BBQ, concert tickets, merch). A participant&rsquo;s dollar may never buy odds, entry, or prize growth.</div>
+
+    <h3 class="rv" style="margin-top:40px">2 · The money model — three streams, zero gambling</h3>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">STREAM A · PRIZE</div><h4>Sponsor-funded &amp; rising</h4><p>Car-for-a-year, RV + season stay, a dream wedding, cash from $10k up. Grows on a published schedule as sponsors join — the media drumbeat.</p></div>
+      <div class="card rv"><div class="n">STREAM B · OPERATIONS</div><h4>Experiences people gladly buy</h4><p>$100 BBQ event pass (real meal + access), $50 &ldquo;In the Woods&rdquo; concert tickets, merch. Funds the running of the event — never the prize.</p></div>
+      <div class="card rv"><div class="n">STREAM C · LOCAL ENGINE</div><h4>Shop-local &ldquo;Blue Seal&rdquo;</h4><p>Spend at a participating merchant and <b>10%</b> grows the prize <em>amount</em> (never odds or entry). The town co-owns the pot. <span class="mono" style="color:var(--gold)">See the Blue Seal below.</span></p></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:40px">The Blue Seal — where a movement starts</h3>
+    <p class="lead rv">The hunt isn&rsquo;t just an event — it&rsquo;s the <b>incubator for the Blue Seal</b>, a shop-local movement for Social Impact Capitalism. This is where it&rsquo;s born.</p>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">HOW IT WORKS</div><h4>10% grows the jackpot</h4><p>Buy anything from a participating merchant and <b>10% of the price</b> goes toward the jackpot. Spend $100 → the prize grows $10. You&rsquo;re shopping local <em>and</em> pumping up the treasure.</p></div>
+      <div class="card rv"><div class="n">YOUR NUMBER</div><h4>One registration number</h4><p>Register free and you get a number. Hand it to any merchant at checkout and your spend is recorded toward the jackpot. It tracks the pot — it never buys you better odds.</p></div>
+      <div class="card rv"><div class="n">THE MOVEMENT</div><h4>Every merchant becomes a member</h4><p>Sign a merchant up and they become a founding <b>Blue Seal member</b>. The hunt seeds a town-wide shop-local network that outlives the event — a real Social Impact Capitalism movement.</p></div>
+    </div>
+    <div class="callout rv">⚖️ <b>The compliance line (sign this off first):</b> this is the one mechanic closest to &ldquo;spend-and-win,&rdquo; so the rails matter most. Registration and winning stay <b>free and skill-based</b>; spending only grows the prize <em>amount</em>, never your odds or eligibility. Keep that true and it&rsquo;s a marketing/sponsorship pool, not gambling — but it is the first thing to run past AGLC and a lawyer.</div>
+
+    <h3 class="rv" style="margin-top:40px">3 · The prize slate</h3>
+    <div class="cards c4">
+      <div class="card rv"><div class="n">SPONSOR · DEALERSHIP</div><h4>A car for a year</h4><p>Use of a vehicle, no expenses. Taxable-benefit + terms in the rules.</p></div>
+      <div class="card rv"><div class="n">SPONSOR · RV DEALER</div><h4>RV + a season&rsquo;s stay</h4><p>Don&rsquo;t own an RV? We provide one — &ldquo;RV by ___.&rdquo;</p></div>
+      <div class="card rv"><div class="n">VILLAGEVOWS</div><h4>A dream wedding</h4><p>3-day use of the venue. High emotional pull, hugely shareable.</p></div>
+      <div class="card rv"><div class="n">CASH · GROWING</div><h4>$10,000 &amp; climbing</h4><p>The number the press repeats: &ldquo;the prize is now $___.&rdquo;</p></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:40px">4 · The trust &amp; drumbeat engine</h3>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">TRUST</div><h4>Bi-weekly attestation</h4><p>A community accountant or judge visits the hidden treasure every two weeks and signs a certificate it&rsquo;s still there. Kills the &ldquo;is it even real?&rdquo; doubt — and each visit is its own news beat.</p></div>
+      <div class="card rv"><div class="n">FRIDAYS · CFCW</div><h4>Radio spin-the-wheel</h4><p>Country radio spins a wheel 8am&ndash;noon that bumps the prize $100&ndash;$1,000 and drops one clue early on-air. At noon we announce the new total everywhere. Tune in to hear it first.</p></div>
+      <div class="card rv"><div class="n">MIDWEEK</div><h4>Double-Take days</h4><p>Mon&ndash;Thu, when the park is quiet, the prize <em>doubles</em> if found that day — an excuse for midweek visitors to come out and hunt when no one else is around.</p></div>
+    </div>
+    <div class="callout rv">🍬 <b>The merchant clue trail:</b> every participating shop — Wabamun, the golf courses, mini-golf, the general store, the senior centre, the fish shop, Knickknacks on Ninth, even the town office — hands out <b>free</b> penny-candy with a clue in the wrapper (or its own posted clue). Gathering clues is <b>skill and effort, not chance</b>, and nothing is bought — so it&rsquo;s clean, and it drives foot traffic to every business in the region.</div>
+
+    <h3 class="rv" style="margin-top:40px">5 · The route to launch</h3>
+    <ul class="trail">
+      <li class="rv"><span class="when">PHASE 1 · WEEKS 1–3</span><h4>Lock the model &amp; the law</h4><p>AGLC / legal sign-off on pure-skill design, free-entry wording, sponsor-funded prize, and the Blue Seal pool. Draft official rules + sponsor agreement.</p></li>
+      <li class="rv"><span class="when">PHASE 2 · WEEKS 3–6</span><h4>Land the sponsors</h4><p>Car, RV, cash and in-kind sponsors signed. Each one becomes a &ldquo;prize just grew&rdquo; press beat. Build the rising-prize tracker.</p></li>
+      <li class="rv"><span class="when">PHASE 3 · WEEKS 6–10</span><h4>Build the hunt &amp; the funnel</h4><p>Clues, shrinking-circle map, candy-clue drop at the store, free online registration + CASL opt-in, the live prize page, open-house dates.</p></li>
+      <li class="rv"><span class="when">PHASE 4 · THE RUN</span><h4>The multi-week drumbeat</h4><p>Daily clue drops, the prize climbs in public, open houses convert, the leaderboard ticks. End with the judge-verified win + chest-reveal ceremony for the cameras.</p></li>
+      <li class="rv"><span class="when">PHASE 5 · AFTER</span><h4>Harvest &amp; learn</h4><p>Nurture the list, report sponsor ROI, run the Learning-Loop retro, and roll the story (and any unfound treasure) into next year&rsquo;s bigger hunt.</p></li>
+    </ul>
+    <div class="note rv">⚠ Numbers (prize size, pass price, sponsor counts) are working assumptions for the model — confirm before any public commitment.</div>
+  </div></div>
+</section>
+
+<!-- ================= IDEAS & SCORES ================= -->
+<section class="tab" id="tab-ideas">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 04 · the idea ledger</span>
+    <h2 class="rv">Every idea we generated — rated &amp; scored.</h2>
+    <p class="lead rv">Scored 0–5 on four axes — <b>Impact</b>, <b>Ease</b>, <b>Compliant</b> (stays legal), <b>On-Brand</b> — for a total out of 20, with a verdict.</p>
+    <div class="legendbar rv">
+      <span><span class="tagv v-ship">Ship</span> do it</span>
+      <span><span class="tagv v-test">Test</span> prove it first</span>
+      <span><span class="tagv v-park">Park</span> later / optional</span>
+      <span><span class="tagv v-kill">Kill</span> legal or brand risk</span>
+    </div>
+    <div class="cards c3" id="ideaGrid" style="margin-top:26px"></div>
+  </div></div>
+</section>
+
+<!-- ================= BRAINSTORM ================= -->
+<section class="tab" id="tab-brainstorm">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 05 · the war room</span>
+    <h2 class="rv">Brainstorm board — bring more, score the same way.</h2>
+    <p class="lead rv">A shared canvas for the team to generate the next wave. Use the prompts, then score each new idea on the same 4 axes so we compare apples to apples.</p>
+
+    <h3 class="rv" style="margin-top:26px">How might we…</h3>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">PROMPT</div><h4>…make the prize climb faster?</h4><p>What non-money milestones could bump it — registration counts, social shares, sponsor tiers, &ldquo;unlock&rdquo; days?</p></div>
+      <div class="card rv"><div class="n">PROMPT</div><h4>…thread every property in?</h4><p>How does a clue live at the Digger Cafe, the driving range, the wedding venue, the moose, the giant chair?</p></div>
+      <div class="card rv"><div class="n">PROMPT</div><h4>…turn finders into ambassadors?</h4><p>Referrals, &ldquo;I solved it&rdquo; badges, team play, a finders&rsquo; wall — what makes them recruit the next wave?</p></div>
+      <div class="card rv"><div class="n">PROMPT</div><h4>…make the press cover it for free?</h4><p>What single moment is too good not to film — the reveal, the climbing number, the giant chair, the goats?</p></div>
+      <div class="card rv"><div class="n">PROMPT</div><h4>…serve families with little kids?</h4><p>A parallel kid-easy hunt at the petting zoo / sandpit so the whole family has a reason to come.</p></div>
+      <div class="card rv"><div class="n">PROMPT</div><h4>…keep them coming weekly?</h4><p>Weekly clue drops, weekly mini-prizes, a weekly open house — what builds the habit over the multi-week run?</p></div>
+    </div>
+
+    <div class="feat rv" style="grid-template-columns:1fr">
+      <div class="t">
+        <span class="eyebrow">Score it before you fall in love with it</span>
+        <h3>The 4-axis rubric (use it on every new idea)</h3>
+        <div class="cards c4" style="margin-top:18px">
+          <div class="card"><div class="n">/5</div><h4>Impact</h4><p>Traffic, list growth, press, sponsor pull.</p></div>
+          <div class="card"><div class="n">/5</div><h4>Ease</h4><p>Can we actually run it this season?</p></div>
+          <div class="card"><div class="n">/5</div><h4>Compliant</h4><p>Does it keep us clearly out of gambling law?</p></div>
+          <div class="card"><div class="n">/5</div><h4>On-Brand</h4><p>Does it feel like &ldquo;business as a force for good&rdquo;?</p></div>
+        </div>
+        <p class="note">Live ideation lives in the team doc; this page is the framework + the running tally so everyone scores the same way.</p>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================= MARKETING ================= -->
+<section class="tab" id="tab-marketing">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 06 · the megaphone</span>
+    <h2 class="rv">Marketing — the rising prize does the work.</h2>
+    <p class="lead rv">We don&rsquo;t advertise a contest. We narrate a story that updates itself every single day.</p>
+
+    <div class="feat rv">
+      <img src="images/moose.png" alt="Battling-moose highway landmark">
+      <div class="t">
+        <span class="eyebrow">The drumbeat</span>
+        <h3>&ldquo;The prize is now $___.&rdquo;</h3>
+        <p>Every sponsor that joins, every milestone hit, is a fresh post, a fresh reel, a fresh reason to drive out. The number is the headline; the chest is the cliff-hanger; the moose and the giant chair are the photo. The campaign writes itself, day after day, for weeks.</p>
+      </div>
+    </div>
+
+    <h3 class="rv" style="margin-top:36px">The funnel</h3>
+    <ul class="trail">
+      <li class="rv"><span class="when">PULL</span><h4>Stop the car</h4><p>Moose landmark + rising-prize mystery + daily clue drops + free press = thousands looking our way.</p></li>
+      <li class="rv"><span class="when">INSPIRE</span><h4>Show the dream</h4><p>The future-casting vision pages: what&rsquo;s here now, what&rsquo;s coming, the dream. They come for the hunt, they fall for the place.</p></li>
+      <li class="rv"><span class="when">CAPTURE</span><h4>Get the email (the right way)</h4><p>Free registration + a separate, optional CASL consent box. The hunt builds the owned list — the durable asset.</p></li>
+      <li class="rv"><span class="when">CONVERT</span><h4>Open houses close it</h4><p>The hunt routes engaged couples to the wedding venue, families to the RV park, everyone to the Digger Cafe.</p></li>
+      <li class="rv"><span class="when">NURTURE</span><h4>The newsletter keeps it warm</h4><p>Bi-weekly stories — purpose, place, events — turn one visit into a season of return trips.</p></li>
+    </ul>
+
+    <h3 class="rv" style="margin-top:36px">Channels &amp; assets</h3>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">OWNED</div><h4>Email + the live prize page</h4><p>The most valuable channel — the rising number, the countdown, the leaderboard, the signup. Everything points here.</p></div>
+      <div class="card rv"><div class="n">EARNED</div><h4>Local + regional press</h4><p>&ldquo;Town hides a treasure, prize keeps growing&rdquo; is a story editors want. Pitch the climb, the reveal, the giant chair.</p></div>
+      <div class="card rv"><div class="n">SOCIAL</div><h4>Reels of the climb</h4><p>Daily clue teasers, drone clue-drops, the live treasure cam, the chest reveal — built for shares.</p></div>
+    </div>
+    <div class="callout rv">🤝 <b>Sponsors are media, not just money.</b> Every &ldquo;the dealership just added a car!&rdquo; is both a marketing beat and a reason the next sponsor wants in. The prize growing is the ad.</div>
+
+    <h3 class="rv" style="margin-top:44px">Make it spectacular — turn a hunt into a festival</h3>
+    <p class="lead rv">Use everything the park already has. The treasure is the hook; the experience is why they bring the whole family and stay the weekend.</p>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">LIVE</div><h4>Saturday band &amp; country dance</h4><p>A ticketed live band on the school or Kokanee stage — &ldquo;In the Woods&rdquo; energy and a real reason to stay Saturday night.</p></div>
+      <div class="card rv"><div class="n">CAST</div><h4>Character actors &amp; an Actors&rsquo; Guild</h4><p>Disney-style — bring out ten costumed characters for 4&ndash;5 hours of skits across our stages, cookhouses and pavilions. The hunt gets a story and a face.</p></div>
+      <div class="card rv"><div class="n">SEASON</div><h4>Hayrides, picnics &amp; box lunches</h4><p>Fall hayrides, picnic space, bring-your-own or buy-a-box-lunch — easy add-ons that make it a day, not a drive-by.</p></div>
+    </div>
+    <div class="callout rv">🏫 <b>Recruit while they&rsquo;re here:</b> with the region&rsquo;s attention on us, advertise the school&rsquo;s open incubation spaces — a 30&ndash;40-child daycare, a hair salon, a shared lawyer/accounting office, farm-business co-working, a winter farmers&rsquo; market. The hunt fills the campus with future tenants.</div>
+  </div></div>
+</section>
+
+<!-- ================= SPONSORS ================= -->
+<section class="tab" id="tab-sponsors">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 06½ · the pitch</span>
+    <h2 class="rv">Become the reason a region drives out here.</h2>
+    <p class="lead rv">You give a prize. We give you the megaphone — your name on a rising-prize story that runs for <em>weeks</em> across radio, press and social. It costs you a prize; it buys you a season of regional fame.</p>
+
+    <h3 class="rv" style="margin-top:30px">What a sponsor gets</h3>
+    <div class="cards c4">
+      <div class="card rv"><div class="n">01</div><h4>The drumbeat</h4><p>&ldquo;The dealership just added a car!&rdquo; Every contribution is its own media moment — a fresh headline, reel and radio mention.</p></div>
+      <div class="card rv"><div class="n">02</div><h4>Logo everywhere</h4><p>The live prize page, the app, the signage, and every &ldquo;prize is now $___&rdquo; post for the whole campaign.</p></div>
+      <div class="card rv"><div class="n">03</div><h4>Trusted goodwill</h4><p>You&rsquo;re not advertising — you&rsquo;re giving. The most credible brand position there is: a force for good.</p></div>
+      <div class="card rv"><div class="n">04</div><h4>The owned audience</h4><p>Your brand in front of thousands of opted-in regional households — and in front of them again every year.</p></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:42px">Three ways to come in</h3>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">ANCHOR</div><h4>Headline prizes</h4><p>The car-for-a-year, the RV + a season&rsquo;s stay, the cash, the dream wedding. Your name <em>is</em> the prize — top billing all campaign.</p></div>
+      <div class="card rv"><div class="n">SUPPORTING</div><h4>Giveaways</h4><p>Geodome stays, activity passes, gift cards — handed out on-air at CFCW and around the park, each tagged to you.</p></div>
+      <div class="card rv"><div class="n">BLUE SEAL</div><h4>Merchant member</h4><p>Put 10% of sales toward the jackpot, become a founding Blue Seal member, and join the shop-local movement the hunt incubates.</p></div>
+    </div>
+
+    <div class="parch rv">
+      <div class="stamp">The Ask</div>
+      <h3>Two anchor sponsors get us to launch.</h3>
+      <p>That&rsquo;s the whole gate. Land a headline prize or two and the rising-prize story starts writing itself — every new sponsor becomes the next reason the press, and the next sponsor, want in. A prize today buys you weeks of being the most-talked-about name in the lake country.</p>
+    </div>
+    <a class="cta rv" href="#updates" data-go="summit" style="margin-top:24px">Let&rsquo;s talk →</a>
+  </div></div>
+</section>
+
+<!-- ================= PROPERTIES ================= -->
+<section class="tab" id="tab-properties">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 07 · the board</span>
+    <h2 class="rv">The properties &amp; opportunities in play.</h2>
+    <p class="lead rv">Everything Business as a Force for Good is building on Seba Beach — the game board the hunt threads together.</p>
+    <div class="cards c3">
+      <div class="card photo rv"><img src="images/aerial.jpg" alt="Seba Hub"><div class="pad"><div class="n">THE UMBRELLA</div><h4>Seba Hub</h4><p>The brand and incubator over it all — a former school turned business hub, &ldquo;a vibrant village for growing amazing children.&rdquo;</p></div></div>
+      <div class="card photo rv"><img src="images/school.webp" alt="The school"><div class="pad"><div class="n">THE HEART</div><h4>The School &amp; Camps</h4><p>Events, activities and the new camps — the campus the whole destination grows around.</p></div></div>
+      <div class="card photo rv"><img src="images/properties.jpg" alt="The RV park"><div class="pad"><div class="n">LODGING</div><h4>Kokanee RV Park</h4><p>~200 sites today, 200 more in the back forty — plus the restaurant and the driving range.</p></div></div>
+      <div class="card photo rv"><img src="images/digger-rooftop.jpg" alt="Digger Cafe"><div class="pad"><div class="n">THE ANCHOR</div><h4>Digger Cafe</h4><p>Rooftop diggers, a kid-run sandpit, a 2nd floor coming, and a merch store — the destination&rsquo;s beating heart.</p></div></div>
+      <div class="card photo rv"><img src="images/moose.png" alt="Moose landmark"><div class="pad"><div class="n">THE LANDMARK</div><h4>Battling-Moose Sculpture</h4><p>A kinetic stainless landmark built to stop highway traffic — the hunt&rsquo;s natural front gate.</p></div></div>
+      <div class="card photo rv"><div class="imgslot">📸 wedding-venue photo → images/wedding.jpg</div><div class="pad"><div class="n">THE EMOTION</div><h4>VillageVows Venue</h4><p>The wedding venue — highest emotional pull, a dream-wedding prize, and a lead-gen magnet for couples.</p></div></div>
+    </div>
+    <h3 class="rv" style="margin-top:36px">…and the dream attractions the hunt can showcase</h3>
+    <div class="pills rv">
+      <span class="pill">🪑 World&rsquo;s-largest <b>Adirondack chairs</b> (Guinness)</span>
+      <span class="pill">🐐 <b>Petting zoo</b> — goats &amp; chickens</span>
+      <span class="pill">🧗 Sky-ropes <b>activity camp</b></span>
+      <span class="pill">⛳ Mini <b>cornhole-golf</b></span>
+      <span class="pill">🎵 <b>In the Woods</b> concert</span>
+      <span class="pill">🏖️ The <b>driving range</b></span>
+    </div>
+
+    <h3 class="rv" style="margin-top:40px">Open opportunities — recruit while the region is watching</h3>
+    <div class="cards c4">
+      <div class="card rv"><div class="n">INCUBATOR</div><h4>School spaces</h4><p>Room for a 30&ndash;40-kid daycare, a hair salon, a shared lawyer/accounting office, and farm-business co-working.</p></div>
+      <div class="card rv"><div class="n">WINTER</div><h4>Year-round draws</h4><p>A winter farmers&rsquo; market, ice-fishing huts, and cold-season activities keep the campus alive past summer.</p></div>
+      <div class="card rv"><div class="n">FINDABLE</div><h4>Activity prizes</h4><p>Ice-fishing-hut outfitting, a 2-night geodome stay, mini-golf and range passes — minor gifts hidden in the hunt or given away on-air.</p></div>
+      <div class="card rv"><div class="n">STAY</div><h4>The staycation</h4><p>Come for a clue, stay for a weekend — RV site, picnic, band, hayride, the Digger Cafe. Plan it all in the app.</p></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================= PRIZE VALUE ================= -->
+<section class="tab" id="tab-prize">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 03½ · the number</span>
+    <h2 class="rv">How big should the main prize be?</h2>
+    <p class="lead rv">Set aside everything sponsors pile on. What should the <em>headline</em> cash prize be — and what does each level actually mean in a rural Alberta community an hour west of Edmonton?</p>
+    <div class="cards c4">
+      <div class="card rv"><div class="n">RANK #4 · $10,000</div><h4>The floor of the floor</h4><p>Real money, but routine — Edmonton radio gives away $10k on a slow week. Reads as &ldquo;nice,&rdquo; not &ldquo;drop everything.&rdquo; Local press only.</p><span class="tagv v-test" style="margin-top:12px;display:inline-block">Meaningful · mild</span></div>
+      <div class="card rv"><div class="n">RANK #3 · $15,000</div><h4>The smart announced floor</h4><p>Credible and respectable — a used car, a serious debt dent. Already worth a multi-week hunt; a strong number to <em>open</em> on and grow from.</p><span class="tagv v-ship" style="margin-top:12px;display:inline-block">Meaningful · solid</span></div>
+      <div class="card rv"><div class="n">RANK #2 · $20,000</div><h4>The meaningfulness sweet spot</h4><p>&ldquo;Twenty grand&rdquo; is life-changing for a working family — a down-payment dent, a year of college. This is where regional press leans in.</p><span class="tagv v-ship" style="margin-top:12px;display:inline-block">Meaningful · high</span></div>
+      <div class="card rv"><div class="n">RANK #1 · $25,000</div><h4>The headline ceiling</h4><p>&ldquo;Alberta&rsquo;s biggest small-town treasure hunt.&rdquo; Regional / provincial press potential. Best as the sponsor-funded <em>crescendo</em> target.</p><span class="tagv v-ship" style="margin-top:12px;display:inline-block">Meaningful · max</span></div>
+    </div>
+
+    <div class="parch rv">
+      <div class="stamp">Recommendation</div>
+      <h3>Announce a $15,000 floor — let it climb to $25,000 in public.</h3>
+      <p>Because the prize is <b>sponsor-funded and rising</b>, the cost isn&rsquo;t ours — the constraint is fundraising, not budget. So aim high. Open on a number that&rsquo;s already credible ($15,000), make the <em>climb</em> the story (Friday radio spins, Double-Take days, new sponsors), and crescendo into the &ldquo;$25,000 — biggest treasure hunt in Alberta&rdquo; headline. If you must pick one fixed number, <b>$20,000</b> is the meaningfulness sweet spot for this community.</p>
+    </div>
+
+    <h3 class="rv" style="margin-top:40px">Secondary prizes — and the &ldquo;fork in the road&rdquo;</h3>
+    <p class="lead rv">Beyond the main cash, the hunt can hide bigger treasures and hand out smaller ones.</p>
+    <div class="cards c2">
+      <div class="card rv"><div class="n">THE FORK</div><h4>Find the dream wedding?</h4><p>A 3-day wedding event can be <em>found</em> in the hunt. The design choice: does claiming it <b>end</b> your main-prize chase, or can you win both? <b>My read:</b> run them as <b>separate parallel hunts</b> so people can win both — more winners, more goodwill, simpler rules. Keep the &ldquo;take-it-and-you&rsquo;re-out&rdquo; fork only if you want the extra drama, and disclose it loudly.</p></div>
+      <div class="card rv"><div class="n">THE GIVEAWAYS</div><h4>Prizes you don&rsquo;t have to find</h4><p>Hand out a flood of smaller prizes on-air at the radio station and around the park: a 2-night geodome stay, ice-fishing-hut outfitting, mini-golf and range passes, restaurant gift cards. Every one markets a park activity and keeps non-finders winning too.</p></div>
+    </div>
+    <div class="note rv">⚠ Dollar figures are working assumptions; the actual prize depends on what sponsors commit. The point is the <em>climb</em>, not the starting number.</div>
+  </div></div>
+</section>
+
+<!-- ================= GAME BOARD & RULES ================= -->
+<section class="tab" id="tab-board">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 07½ · how it physically works</span>
+    <h2 class="rv">The Game Board, the App &amp; the Rules.</h2>
+    <p class="lead rv">Where you can go, how you play, and the app that ties the whole staycation together — plus our first honest draft of the rules.</p>
+
+    <h3 class="rv" style="margin-top:26px">When you can hunt</h3>
+    <div class="stats rv">
+      <div class="stat"><div class="v">8–9</div><div class="k">open 8am to 9pm</div></div>
+      <div class="stat"><div class="v">7</div><div class="k">days a week</div></div>
+      <div class="stat"><div class="v">&infin;</div><div class="k">hunt as often as you like</div></div>
+      <div class="stat"><div class="v">2&times;</div><div class="k">value doubles midweek (Mon&ndash;Thu)</div></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:42px">The App</h3>
+    <div class="cards c4">
+      <div class="card rv"><div class="n">THE MAP</div><h4>Your game board</h4><p>A live map of the play area — what&rsquo;s in-bounds, what&rsquo;s off-limits (occupied RV sites, private homes, guest areas, staff zones, the water&rsquo;s edge), and where every clue and activity lives.</p></div>
+      <div class="card rv"><div class="n">THE CHASER</div><h4>Your breadcrumb trail</h4><p>Like a personal GPS chase — it traces <em>your</em> steps, not everyone&rsquo;s. See exactly where you&rsquo;ve searched, every clue you&rsquo;ve gathered so far, and what&rsquo;s left. (The same loss-aversion pull as our Culture Chaser.)</p></div>
+      <div class="card rv"><div class="n">THE PLANNER</div><h4>Plan your staycation</h4><p>Every activity in one place — book a site, a picnic, a box lunch, the Saturday band, a hayride. Come for a clue, stay for a weekend.</p></div>
+      <div class="card rv"><div class="n">THE TRACKER</div><h4>Live prize &amp; leaderboard</h4><p>The rising prize, the Friday bumps, the Double-Take days, the countdown and a leaderboard — the urgency engine in your pocket.</p></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:42px">Chaser Mode — the Catcher</h3>
+    <p class="lead rv">Borrowed from Red Bull&rsquo;s <b>Wings for Life World Run</b>: there is no fixed finish line — a <b>Catcher Car</b> starts behind you and speeds up until it passes you. People go <em>dramatically</em> farther fleeing a moving line than chasing a fixed one. So we turn the hunt into a chase.</p>
+    <div class="cards c2">
+      <div class="card rv"><div class="n">THE CATCHER</div><h4>A pursuer with a face</h4><p>A virtual Catcher — give it a character and a voice (the Sasquatch, the Phantom Prospector) — advances across the map on a schedule. Stay ahead and you&rsquo;re still in the running; let it pass your progress and your multiplier drops.</p></div>
+      <div class="card rv"><div class="n">YOUR OWN RACE</div><h4>Everyone is chased</h4><p>Each player gets a Catcher tuned to <em>their</em> pace — a first-timer and an expert both feel the heat. The masses stay hooked, not just the one eventual winner.</p></div>
+      <div class="card rv"><div class="n">THE DAILY SWEEP</div><h4>Beat the morning sweep</h4><p>Each day the Catcher sweeps the zone starting early — a reason to show up first thing, not roll in at noon.</p></div>
+      <div class="card rv"><div class="n">OUTRUN = GIVE</div><h4>Chase for charity</h4><p>Wings for Life is a charity run. We do the same: every clue you solve ahead of the Catcher unlocks a sponsor donation to a local cause. <b>Outrun the Catcher, fund the village</b> — Social Impact Capitalism baked into the game itself.</p></div>
+    </div>
+    <div class="callout rv">🏃 <b>Why it works:</b> a fixed finish line lets you stop the moment you hit &ldquo;good enough.&rdquo; A Catcher behind you never lets you coast — loss aversion plus the thrill of pursuit pull people far past where a prize alone would. Your own <b>Culture Chaser / Catcher Car</b> already runs on this; the hunt is its outdoor cousin.</div>
+
+    <h3 class="rv" style="margin-top:42px">Draft Rules — v0.1</h3>
+    <div class="parch rv">
+      <div class="stamp">For Legal Review</div>
+      <h3>The first honest draft</h3>
+      <ul>
+        <li><b>Winning is skill.</b> Solve the clues, find the marker, and a judge verifies. No luck decides the winner.</li>
+        <li><b>Entry is free.</b> Register free online or in person, and gather free candy-clues at merchants. You never pay to play or to improve your odds.</li>
+        <li><b>Stay on the board.</b> Search only the in-bounds areas the app marks. Occupied RV sites, private homes, guest spaces, staff areas and the water&rsquo;s edge are off-limits.</li>
+        <li><b>Respect guests.</b> Do not enter or disturb anyone&rsquo;s site or rental. Trespass or harassment means disqualification.</li>
+        <li><b>Be safe.</b> No digging in unsafe spots, no after-dark searching where posted, children supervised. Safety within the rules is your responsibility.</li>
+        <li><b>The prize is real.</b> It&rsquo;s hidden, documented, and attested every two weeks by a community accountant or judge.</li>
+        <li><b>The prize grows.</b> Friday radio spins ($100&ndash;$1,000), Double-Take midweek days, and sponsor adds can raise the total — all announced publicly.</li>
+        <li><b>Secondary prizes</b> have their own rules (see Prize Value). Radio-station giveaways are separate from the hunt.</li>
+        <li><b>Play fair.</b> Family-friendly conduct; don&rsquo;t publicly spoil clues you were given privately.</li>
+        <li><b>The fine print.</b> Eligibility, the end date, the unfound-treasure outcome, prize taxes, and any skill-testing requirement live in the official rules.</li>
+      </ul>
+    </div>
+    <div class="note rv">⚠ Draft v0.1 — a starting point for the team and the lawyer, not final rules. The out-of-bounds zones and guest-privacy lines especially need a walk-through on the real property.</div>
+  </div></div>
+</section>
+
+<!-- ================= PRECEDENTS ================= -->
+<section class="tab" id="tab-precedents">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 08 · we&rsquo;re not the first</span>
+    <h2 class="rv">Five who proved it works — and what each teaches us.</h2>
+    <div class="cards c2">
+      <div class="card rv"><div class="n">2024 · USA</div><h4>Project Skydrop</h4><p>A shrinking-circle satellite hunt with a ~$130k prize, found in ~10 days, with a huge live online following. <b>Teaches us:</b> the shrinking circle + live countdown is gripping — but it mixed luck in. We keep the drama, swap luck for skill, and let sponsors fund the pot.</p></div>
+      <div class="card rv"><div class="n">2010–2020 · Rockies</div><h4>Forrest Fenn&rsquo;s Treasure</h4><p>A real ~$1–2M chest hidden with a poem of clues drew an estimated 350,000+ searchers and years of tourism across NM, WY and CO. <b>Teaches us:</b> a real treasure + a great story drives years of travel — and that wilderness risk is deadly serious, which is exactly why we stay on-property and skill-based.</p></div>
+      <div class="card rv"><div class="n">1979 · UK</div><h4>Masquerade (the golden hare)</h4><p>Kit Williams&rsquo; picture book of clues to a real buried golden hare sold ~2M+ copies and launched a genre. <b>Teaches us:</b> the artifact + the narrative can become a <em>product</em> and a media franchise, not just an event.</p></div>
+      <div class="card rv"><div class="n">2000–today · Global</div><h4>Geocaching</h4><p>3M+ hidden caches, millions of players, a proven driver of tourism and local-business foot traffic. <b>Teaches us:</b> a repeatable, community-owned &ldquo;go-find-it&rdquo; format reliably moves people to specific places — our properties.</p></div>
+      <div class="card rv"><div class="n">1993–2024 · France</div><h4>On the Trail of the Golden Owl</h4><p>The longest-running armchair treasure hunt — a buried owl finally found after 31 years, sustaining a devoted community for three decades. <b>Teaches us:</b> mystery and longevity compound; an annual hunt becomes a brand people organize their lives around.</p></div>
+      <div class="card rv"><div class="n">SMB · everywhere</div><h4>Shop-local scavenger hunts &amp; McMenamins Passport</h4><p>Chambers, BIAs and multi-venue businesses use hunts/passports to drive foot traffic and build an owned audience. <b>Teaches us:</b> the lead-gen + shop-local model is already proven at exactly our scale — we&rsquo;re just doing it bigger and better.</p></div>
+    </div>
+    <div class="note rv">Sources are public press &amp; the operators&rsquo; own materials; figures are approximate and worth a fact-check before they go in any printed pitch.</div>
+  </div></div>
+</section>
+
+<!-- ================= THE NUMBERS ================= -->
+<section class="tab" id="tab-numbers">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 08½ · the numbers</span>
+    <h2 class="rv">What it costs — and what it&rsquo;s worth.</h2>
+    <p class="lead rv">A first-pass <b>appraisal, not a budget</b>. The prize is <b>sponsor-funded</b>, so it isn&rsquo;t our cost — these are the dollars to <em>run</em> the hunt for a year, weighed against the marketing value it buys.</p>
+
+    <div class="stats rv">
+      <div class="stat"><div class="v">~$40k</div><div class="k">annual cost to run</div></div>
+      <div class="stat"><div class="v">~$150k</div><div class="k">marketing value bought</div></div>
+      <div class="stat"><div class="v">~4:1</div><div class="k">value-to-cost ratio</div></div>
+      <div class="stat"><div class="v">$0</div><div class="k">prize cost to us (sponsor-funded)</div></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:40px">Annual cost to run</h3>
+    <p class="lead rv">Working estimate <b>~$40,000</b> — as low as ~$25k if the app is AI-built and judging/events are in-kind, up to ~$55k fully outsourced.</p>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">~$15,000</div><h4>Coordination &amp; operator</h4><p>A part-time operator across the multi-week ramp, run and retro. The single biggest line.</p></div>
+      <div class="card rv"><div class="n">~$6,000</div><h4>The app</h4><p>Map, chaser, clue log, registration, prize tracker — AI-assisted build plus hosting &amp; messaging.</p></div>
+      <div class="card rv"><div class="n">~$4,000</div><h4>Legal &amp; rules</h4><p>AGLC/legal review, official rules, sponsor and Blue Seal agreements.</p></div>
+      <div class="card rv"><div class="n">~$6,000</div><h4>Marketing &amp; kit</h4><p>Signage, printing, clue kits, the free candy, social boosts, content production.</p></div>
+      <div class="card rv"><div class="n">~$3,000</div><h4>Treasure, judging &amp; attestation</h4><p>The chest &amp; markers, judges&rsquo; time, and the bi-weekly community attestation.</p></div>
+      <div class="card rv"><div class="n">~$3,000</div><h4>Insurance &amp; liability</h4><p>Event and public-on-property coverage — non-negotiable for a public hunt.</p></div>
+      <div class="card rv"><div class="n">~$5,000</div><h4>Contingency (~15%)</h4><p>Because first-year estimates are always optimistic.</p></div>
+      <div class="card rv"><div class="n">≈ break-even</div><h4>The events</h4><p>BBQ, band, character actors, hayrides — funded by ticket sales, not a net cost.</p></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:44px">What we&rsquo;re buying — value appraisal</h3>
+    <div class="cards c2">
+      <div class="card rv"><div class="n">~$50,000</div><h4>Earned media</h4><p>Weeks of regional press plus the CFCW Friday 8am&ndash;noon segment across the run — effectively sponsored airtime we&rsquo;d otherwise pay dearly for.</p></div>
+      <div class="card rv"><div class="n">~$50,000+</div><h4>The owned email list</h4><p>~2,500&ndash;5,000 opted-in regional households, marketed to across every property for years. The durable asset — and it compounds annually.</p></div>
+      <div class="card rv"><div class="n">~$50,000</div><h4>On-site &amp; merchant spend</h4><p>Hunters buying BBQ, cafe, sites, concert tickets and gas — plus the Blue Seal shopping across town during the campaign.</p></div>
+      <div class="card rv"><div class="n">strategic</div><h4>Brand &amp; sponsor ties</h4><p>Positioning SebaHub as the region&rsquo;s signature destination + incubator, and the B2B sponsor relationships — real upside we don&rsquo;t even count here.</p></div>
+    </div>
+
+    <div class="parch rv">
+      <div class="stamp">The Verdict</div>
+      <h3>~$40k to run buys ~$150k+ in value — roughly 4:1, before brand and compounding.</h3>
+      <p>And because the prize is sponsor-funded, the downside is mostly <em>time</em>, not cash. The real question isn&rsquo;t &ldquo;can we afford it?&rdquo; — it&rsquo;s &ldquo;can we land the sponsors and staff it,&rdquo; which is exactly what the CEO Review gates on.</p>
+    </div>
+    <div class="note rv">⚠ First-pass appraisal with stated assumptions — not a quote. Earned-media and list values are estimates; nail real numbers with a coordinator quote, an app quote and an insurance quote before committing, and track actuals in the Learning Loop.</div>
+  </div></div>
+</section>
+
+<!-- ================= CEO REVIEW ================= -->
+<section class="tab" id="tab-ceo">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 09 · founder-mode scrutiny</span>
+    <h2 class="rv">CEO Executive Review.</h2>
+    <p class="lead rv">No cheerleading. The same review a sharp board chair would give before signing off.</p>
+
+    <div class="parch rv">
+      <div class="stamp">For Decision</div>
+      <h3>The bet, in one line</h3>
+      <p>We spend a season&rsquo;s operating energy and sponsor goodwill to acquire a regional, opted-in audience and a wave of property traffic — wagering that the owned list + foot traffic are worth more than the cost and risk of running a public, prize-bearing event.</p>
+      <h3 style="margin-top:22px">What&rsquo;s genuinely strong</h3>
+      <ul>
+        <li>The funding flips a legal risk into a marketing asset — sponsors fund the prize, and the growth <em>is</em> the campaign.</li>
+        <li>The real deliverable (an owned email list + traffic to five properties) is durable and compounds annually.</li>
+        <li>It costs little if sponsors carry the prize; downside is mostly time, not cash.</li>
+      </ul>
+      <h3 style="margin-top:22px">The five hard questions</h3>
+      <ul>
+        <li><b>Will sponsors actually sign?</b> The whole model leans on it. If the car/RV/cash don&rsquo;t materialize, there&rsquo;s no rising-prize story. <em>Get 2–3 signed before announcing anything.</em></li>
+        <li><b>Can we guarantee pure skill?</b> If any luck taints &ldquo;who wins&rdquo; while money flows, AGLC can call it a lottery and shut it down. <em>Legal sign-off is a hard gate, not a nicety.</em></li>
+        <li><b>Who runs it?</b> Multi-week ops — clues, judging, social, sponsors, the event day — is real work. <em>Name the owner and the hours before committing.</em></li>
+        <li><b>What if no one finds it?</b> Real prize, disclosed rules, hard end date, graceful unfound outcome — or it reads as a phantom-prize scam.</li>
+        <li><b>Is the list worth the effort?</b> Be honest about the number we expect to capture and what each contact is worth across the properties.</li>
+      </ul>
+      <h3 style="margin-top:22px">The risks worth naming</h3>
+      <p><b>Regulatory</b> (the killer — gate on legal). <b>Sponsor dependency</b> (no sponsors, no story). <b>Execution load</b> (under-staffed multi-week events fizzle). <b>Weather/turnout</b> (outdoor, seasonal). <b>Brand</b> (a flop or a compliance stumble dents &ldquo;force for good&rdquo;).</p>
+      <h3 style="margin-top:22px">Verdict — conditional GO</h3>
+      <p><b>Proceed to a Year-1 pilot</b>, scoped small and clean: one hunt, fully sponsor-funded prize, free skill-based entry, the list as the real KPI. <b>Gate the public launch on three things being true:</b> (1) written legal/AGLC comfort on the pure-skill, free-entry, sponsor-funded design; (2) at least two anchor sponsors signed; (3) a named operator with the hours blocked. Hit those, and the upside dwarfs the cost. Miss any, and we wait.</p>
+    </div>
+    <p class="note rv">Generated in CEO/founder-review mode — adversarial by design. Pair with the AGLC research (still pending) before this becomes a real go/no-go.</p>
+  </div></div>
+</section>
+
+<!-- ================= DO IT BETTER ================= -->
+<section class="tab" id="tab-better">
+  <div class="band"><div class="wrap">
+    <span class="eyebrow rv">Finding 10 · Learning Loop V13</span>
+    <h2 class="rv">How we do it a little better — every single year.</h2>
+    <p class="lead rv">Run each annual hunt as one turn of the Learning Loop: capture what worked, score it, and graduate the improvements into next year. The hunt gets sharper while the brand compounds.</p>
+
+    <h3 class="rv" style="margin-top:30px">Learning Loop V13 — ten ways the hunt gets better every year</h3>
+    <ul class="trail">
+      <li class="rv"><span class="when">01 · INTAKE</span><h4>Capture every signal</h4><p>Clue solve-rates, drop-off points, which sponsor beats drove signups, which open house converted.</p></li>
+      <li class="rv"><span class="when">02 · SCORE</span><h4>Rate every tactic /100</h4><p>What earned its keep and what didn&rsquo;t — scored, not guessed.</p></li>
+      <li class="rv"><span class="when">03 · NORTH-STAR GATE</span><h4>Does it serve the village?</h4><p>If a tactic doesn&rsquo;t make Seba Beach more vibrant, it&rsquo;s cut — however clever it was.</p></li>
+      <li class="rv"><span class="when">04 · LEDGER</span><h4>Signed, append-only receipts</h4><p>What worked is recorded, so next year runs on evidence, not anecdote.</p></li>
+      <li class="rv"><span class="when">05 · IMMUNE SYSTEM</span><h4>Antibody monitors</h4><p>Live watchers that catch a too-hard clue or a flopping sponsor beat before it spreads.</p></li>
+      <li class="rv"><span class="when">06 · THE BATON</span><h4>Clean handoffs</h4><p>Casey → Murphy → Thomas → Meg, with nothing dropped between them.</p></li>
+      <li class="rv"><span class="when">07 · SOURDOUGH</span><h4>Keep the starter</h4><p>The best clue templates, the sponsor pitch and the rules carry forward to seed the next hunt.</p></li>
+      <li class="rv"><span class="when">08 · MURMURATION</span><h4>A swarm of small tests</h4><p>Each hunt runs a few experiments — clue styles, prize-bump cadences — and flocks toward what works.</p></li>
+      <li class="rv"><span class="when">09 · THE WATCHMAN</span><h4>Drift agent</h4><p>Flags the event drifting off-mission or toward a compliance risk — early, while it&rsquo;s cheap to fix.</p></li>
+      <li class="rv"><span class="when">10 · THE GENIE</span><h4>Persistent learning</h4><p>An agent that remembers every hunt — so year five stands on four years of evidence.</p></li>
+    </ul>
+
+    <h3 class="rv" style="margin-top:40px">Ten Move 37s — the non-obvious, high-leverage plays</h3>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">MOVE 37 · 01</div><h4>The prize <em>is</em> the marketing</h4><p>A self-updating, rising number the press repeats for free. We don&rsquo;t buy the ad — the prize broadcasts itself.</p></div>
+      <div class="card rv"><div class="n">MOVE 37 · 02</div><h4>Sponsors fund it, players don&rsquo;t</h4><p>The single move that turns &ldquo;illegal lottery&rdquo; into &ldquo;legal marketing&rdquo; — and makes the budget someone else&rsquo;s.</p></div>
+      <div class="card rv"><div class="n">MOVE 37 · 03</div><h4>It&rsquo;s lead-gen wearing a map</h4><p>The contest is the costume; the owned email list is the actual product. Everything optimizes for capture.</p></div>
+      <div class="card rv"><div class="n">MOVE 37 · 04</div><h4>The unfound chest is next year&rsquo;s ad</h4><p>&ldquo;Still not found — and the prize just got bigger&rdquo; beats a clean win. Loss becomes momentum.</p></div>
+      <div class="card rv"><div class="n">MOVE 37 · 05</div><h4>The town co-owns the pot</h4><p>Blue Seal shop-local makes every merchant root for the hunt — free distribution we could never buy.</p></div>
+      <div class="card rv"><div class="n">MOVE 37 · 06</div><h4>One hunt, five front doors</h4><p>A single event acquires customers for the RV park, cafe, venue, school and range at once.</p></div>
+      <div class="card rv"><div class="n">MOVE 37 · 07</div><h4>The Catcher, not the clock</h4><p>Wings for Life applied: a moving chaser drives far more effort than a fixed finish line. We hunt with a Catcher.</p></div>
+      <div class="card rv"><div class="n">MOVE 37 · 08</div><h4>Outrun the Catcher, fund the village</h4><p>Effort unlocks sponsor donations to a local cause — the chase itself becomes Social Impact Capitalism fuel.</p></div>
+      <div class="card rv"><div class="n">MOVE 37 · 09</div><h4>Everyone runs their own race</h4><p>A personal Catcher per player means the masses stay engaged — not just the one eventual winner.</p></div>
+      <div class="card rv"><div class="n">MOVE 37 · 10</div><h4>Attestation as theatre</h4><p>The bi-weekly &ldquo;is it still there?&rdquo; verification is both trust and a recurring news beat — proof becomes promotion.</p></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:40px">Ten Jobs To Be Done — who&rsquo;s really &ldquo;hiring&rdquo; the hunt</h3>
+    <div class="cards c3">
+      <div class="card rv"><div class="n">FAMILY</div><h4>&ldquo;Give us an adventure day we&rsquo;ll talk about for years.&rdquo;</h4></div>
+      <div class="card rv"><div class="n">KIDS</div><h4>&ldquo;Let me run a digger and find treasure like a real explorer.&rdquo;</h4></div>
+      <div class="card rv"><div class="n">ENGAGED COUPLE</div><h4>&ldquo;Show us a wedding venue without a sales pitch.&rdquo;</h4></div>
+      <div class="card rv"><div class="n">CITY DAY-TRIPPER</div><h4>&ldquo;Give me a cheap, memorable reason to leave Edmonton.&rdquo;</h4></div>
+      <div class="card rv"><div class="n">MIDWEEK VISITOR</div><h4>&ldquo;Give me something fun to do on a quiet Tuesday.&rdquo;</h4></div>
+      <div class="card rv"><div class="n">SPONSOR</div><h4>&ldquo;Get our name trusted local goodwill &amp; eyeballs.&rdquo;</h4></div>
+      <div class="card rv"><div class="n">MERCHANT</div><h4>&ldquo;Send foot traffic through my door.&rdquo;</h4></div>
+      <div class="card rv"><div class="n">THE REGION</div><h4>&ldquo;Give us vitality and a reason to drive out here.&rdquo;</h4></div>
+      <div class="card rv"><div class="n">FUTURE FOUNDER</div><h4>&ldquo;Show me there&rsquo;s a place to build my business.&rdquo;</h4></div>
+      <div class="card rv"><div class="n">BAAFFG</div><h4>&ldquo;Hand us an owned audience &amp; traffic to every property — compounding yearly.&rdquo;</h4></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:40px">How AI runs &amp; scales it</h3>
+    <div class="two">
+      <div class="rv">
+        <h4 style="color:var(--gold-bright)">AI that runs this hunt</h4>
+        <ul class="parch" style="background:var(--panel);box-shadow:none;color:var(--cream-soft)">
+          <li style="color:var(--cream-soft)">Generates and difficulty-tunes clues; balances the shrinking-circle pace.</li>
+          <li style="color:var(--cream-soft)">Runs the live rising-prize tracker and auto-drafts the &ldquo;now $___&rdquo; social posts.</li>
+          <li style="color:var(--cream-soft)">Writes the CASL-compliant nurture sequence and segments the list.</li>
+          <li style="color:var(--cream-soft)">Drafts sponsor outreach and keeps the sponsor-ROI receipt.</li>
+          <li style="color:var(--cream-soft)">Powers a real-time leaderboard + judge-assist, and a compliance watchdog that flags anything drifting toward pay-for-odds.</li>
+          <li style="color:var(--cream-soft)">A &ldquo;concierge&rdquo; agent answering player questions 24/7.</li>
+        </ul>
+      </div>
+      <div class="rv">
+        <h4 style="color:var(--gold-bright)">AI that scales it past Seba Beach</h4>
+        <ul class="parch" style="background:var(--panel);box-shadow:none;color:var(--cream-soft)">
+          <li style="color:var(--cream-soft)"><b style="color:var(--gold)">Hunt-in-a-box:</b> the whole format as an AI-run playbook other towns license.</li>
+          <li style="color:var(--cream-soft)">AI generates each town&rsquo;s themed map, clues and prize-page from a brief.</li>
+          <li style="color:var(--cream-soft)">One operator + an agent fleet runs many hunts at once — the 5/10 model with AI doing the 80%.</li>
+          <li style="color:var(--cream-soft)">Every hunt feeds the Genie, so the playbook gets better with each town that runs it.</li>
+          <li style="color:var(--cream-soft)">The franchise becomes a Social-Impact-Capitalism export: rural communities, revitalized, on a repeatable engine.</li>
+        </ul>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================= SIGNUP + FOOTER (shared) ================= -->
+<section class="band tight" style="position:relative;z-index:1;border-top:1px solid var(--line)">
+  <div class="wrap">
+    <span class="eyebrow">Be part of it</span>
+    <h2 style="font-size:clamp(26px,3.4vw,38px)">Want in when the hunt goes live?</h2>
+    <p class="lead">The same owned-list engine the whole plan is built on — sign up and we&rsquo;ll send the launch, the clues, and the climbing prize.</p>
+    <form class="form" onsubmit="return false;" id="sform">
+      <div class="row"><input type="text" placeholder="Your name" name="name"><input type="email" placeholder="Your email" name="email" required></div>
+      <label class="ch"><input type="checkbox" name="m"><span>Yes, email me Seba Hub news &amp; the Treasure Chest Challenge launch. (Optional — unsubscribe anytime.)</span></label>
+      <button class="cta" type="submit">Keep me posted →</button>
+      <p class="note" id="sok" style="display:none">🎉 You&rsquo;re on the list. (Prototype — wire to Mailchimp/ConvertKit to capture for real.)</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:12px"><img src="images/logo.webp" style="height:26px" alt="Seba Hub"><span class="mono" style="font-size:11px;letter-spacing:.16em;color:var(--gold)">A SOCIAL IMPACT CAPITALISM ENTERPRISE</span></div>
+    <div>Purpose with Profit. Make a Difference. · <a href="mailto:tim@businessasaforceforgood.ca">tim@businessasaforceforgood.ca</a></div>
+  </div>
+  <div class="wrap"><div class="note" style="width:100%">DRAFT field plan for internal review (Tim, Casey, Murphy, Sam, Thomas, Meg). Figures are working assumptions; AGLC/legal sign-off still pending. Photo slots marked 📸 need real images.</div></div>
+</footer>
+
+</main>
+
+<script>
+// ---------- ideas data ----------
+const IDEAS=[
+ {t:"Sponsor-funded rising prize",d:"The prize climbs in public as sponsors join — the media drumbeat.",s:[5,4,5,5],v:"ship"},
+ {t:"Sponsored prize slate",d:"Car-for-a-year, RV + stay, dream wedding, growing cash.",s:[5,4,5,5],v:"ship"},
+ {t:"Newsletter capture + CASL opt-in",d:"The owned email list — the real, durable treasure.",s:[5,5,5,4],v:"ship"},
+ {t:"Free candy clues at the store",d:"Free clues for anyone — a clean, free way in.",s:[4,5,5,4],v:"ship"},
+ {t:"In-person reg → free concert ticket",d:"A gift for driving out — not an entry or an odds boost.",s:[4,5,5,4],v:"ship"},
+ {t:"Open houses at each venue",d:"The conversion half of the funnel.",s:[4,4,5,5],v:"ship"},
+ {t:"Shrinking-circle map (story evolves)",d:"Narrows the zone and builds drama over weeks.",s:[5,3,4,5],v:"ship"},
+ {t:"BBQ event pass ($100)",d:"Real meal + access — funds ops, never the prize.",s:[4,4,5,4],v:"ship"},
+ {t:"Multi themed hunts (cash / wedding / school)",d:"Separate free hunts, opt into one or all.",s:[4,3,5,4],v:"ship"},
+ {t:"Skill rounds + judge verification",d:"The legal backbone — skill decides the winner.",s:[4,3,5,4],v:"ship"},
+ {t:"Treasure-reveal ceremony",d:"The chest opening as the PR moment.",s:[3,4,5,4],v:"ship"},
+ {t:"Live treasure cam + countdown",d:"Urgency and shareable daily content.",s:[3,3,5,4],v:"test"},
+ {t:"Drone / aerial clue drops",d:"Very visual for reels and ads.",s:[3,3,5,4],v:"test"},
+ {t:"Blue Seal shop-local pool (10% of sales)",d:"Town co-owns the pot; grows amount, not odds.",s:[4,2,3,5],v:"test"},
+ {t:"Treasure maybe never found",d:"Hard hunt — needs real prize, proof, end date.",s:[3,3,4,3],v:"test"},
+ {t:"Moving the treasure monthly",d:"Adds proof/ops burden — move the story instead.",s:[2,2,4,3],v:"park"},
+ {t:"Skill-testing question at the end",d:"Optional insurance; not needed if win is pure skill.",s:[2,5,5,2],v:"park"},
+ {t:"Pay to shrink your own circle",d:"Buying better odds = gambling. Cut it.",s:[3,3,1,2],v:"kill"},
+ {t:"Player-funded prize pool",d:"Pooling players' money into the prize = gambling.",s:[3,2,1,2],v:"kill"},
+ {t:"Bi-weekly attestation event",d:"A community accountant/judge signs that the prize is still hidden — kills the 'is it real?' doubt.",s:[4,4,5,5],v:"ship"},
+ {t:"CFCW radio spin-the-wheel + early clue",d:"Friday 8–noon: wheel bumps the prize $100–$1,000 and drops one clue early on-air.",s:[5,3,4,4],v:"ship"},
+ {t:"Double-Take midweek days",d:"Mon–Thu the prize doubles if found — fills the empty days.",s:[4,4,4,4],v:"ship"},
+ {t:"Merchant clue trail (free candy/clue)",d:"Every shop hands out a free clue — skill/effort, not chance. Drives foot traffic everywhere.",s:[5,4,4,5],v:"ship"},
+ {t:"Findable minor gifts",d:"Ice-fishing outfitting, activity passes hidden in the hunt — each markets a park activity.",s:[4,4,5,5],v:"ship"},
+ {t:"Radio-station giveaways",d:"Geodome stays, gift cards given away on-air — non-finders win too.",s:[3,4,5,4],v:"ship"},
+ {t:"Character actors / Actors' Guild",d:"Disney-style costumed skits across our stages — gives the hunt a face.",s:[4,3,5,5],v:"ship"},
+ {t:"Saturday band + country dance",d:"Ticketed live music — a reason to stay the weekend.",s:[4,3,5,4],v:"ship"},
+ {t:"Hayrides, picnics & box lunches",d:"Seasonal add-ons that make it a day, not a drive-by.",s:[3,4,5,5],v:"ship"},
+ {t:"Incubation advertising at the hunt",d:"Recruit daycare/salon/office tenants while the region is watching.",s:[3,4,5,5],v:"ship"},
+ {t:"The App + chaser breadcrumb",d:"Game board, your-steps trail, clue log, staycation planner. Real build effort.",s:[5,2,5,4],v:"test"},
+ {t:"Chaser Mode — the Catcher",d:"A pursuing Catcher (à la Wings for Life) drives far more effort than a fixed finish; outrun it to unlock charity donations.",s:[5,3,5,5],v:"ship"},
+ {t:"Secondary 'find-the-wedding' fork",d:"Take the found prize = out of the main hunt? Or parallel hunts? Design choice.",s:[3,3,4,3],v:"test"},
+];
+const AX=["Impact","Ease","Compliant","Brand"];
+const grid=document.getElementById('ideaGrid');
+IDEAS.sort((a,b)=>b.s.reduce((x,y)=>x+y,0)-a.s.reduce((x,y)=>x+y,0)).forEach(it=>{
+  const tot=it.s.reduce((a,b)=>a+b,0);
+  const bars=it.s.map((v,i)=>`<span>${AX[i]}</span><div class="bar"><i style="width:${v/5*100}%"></i></div>`).join('');
+  const el=document.createElement('div');el.className='idea rv';
+  el.innerHTML=`<div class="top"><h4>${it.t}</h4><span class="tagv v-${it.v}">${it.v}</span></div>
+    <p>${it.d}</p><div class="score">${bars}<span>Total</span><span class="tot">${tot}<small style="font-size:11px;color:var(--cream-soft)">/20</small></span></div>`;
+  grid.appendChild(el);
+});
+
+// ---------- tabs ----------
+const tabBtns=[...document.querySelectorAll('#tabs button')];
+function show(name){
+  document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='tab-'+name));
+  tabBtns.forEach(b=>b.classList.toggle('on',b.dataset.t===name));
+  window.scrollTo({top:0,behavior:'instant'});
+  setTimeout(armReveals,30);
+  if(name==='summit'){runPrize();runCounts();}
+}
+tabBtns.forEach(b=>b.addEventListener('click',()=>show(b.dataset.t)));
+document.querySelectorAll('[data-go]').forEach(a=>a.addEventListener('click',()=>show(a.dataset.go)));
+
+// ---------- reveal on scroll ----------
+let io;
+function armReveals(){
+  const els=[...document.querySelectorAll('.tab.on .rv:not(.in)')];
+  if(!io){io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});}
+  els.forEach((el,i)=>{el.style.transitionDelay=(Math.min(i,8)*60)+'ms';io.observe(el);});
+}
+// ---------- count-ups ----------
+function animateNum(el,to,prefix='',dur=1400){
+  const start=performance.now();
+  function tick(now){const p=Math.min((now-start)/dur,1);const e=1-Math.pow(1-p,3);
+    el.textContent=prefix+Math.round(to*e).toLocaleString();if(p<1)requestAnimationFrame(tick);}
+  requestAnimationFrame(tick);
+}
+let prizeDone=false;
+function runPrize(){if(prizeDone)return;prizeDone=true;animateNum(document.getElementById('prizeCount'),10000,'$',1600);}
+let countsDone=false;
+function runCounts(){if(countsDone)return;countsDone=true;document.querySelectorAll('[data-count]').forEach(el=>animateNum(el,+el.dataset.count,'',1200));}
+
+// ---------- signup ----------
+document.getElementById('sform').addEventListener('submit',function(e){e.preventDefault();if(!this.email.value.trim())return;document.getElementById('sok').style.display='block';});
+
+// init
+armReveals();runPrize();runCounts();
+</script>
+</body>
+</html>
