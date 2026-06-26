@@ -931,6 +931,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
 
   var reg={};
   function boot(){
+    /* the constellation map is HOME — always land here, never restore a prior scroll */
+    if('scrollRestoration' in history) history.scrollRestoration='manual';
+    window.scrollTo(0,0);
+    window.addEventListener('load',function(){ window.scrollTo(0,0); });
+    var brand=document.querySelector('.brand'); if(brand){ brand.style.cursor='pointer'; brand.title='Back to the map (home)'; brand.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); }); }
     var lc=document.getElementById('landingCanvas');
     if(lc){
       reg.landing=Graph(lc,LANDING,{interactive:true,labels:true,big:true,repel:7000,link:130,minR:6,pad:48,onNode:function(n){ if(n.tab&&window.showTab) window.showTab(n.tab); }});
