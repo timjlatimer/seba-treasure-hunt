@@ -50,11 +50,19 @@ header.nav{position:sticky;top:0;z-index:100;background:rgba(11,23,24,.86);backd
 .brand img{height:30px}
 .brand .bt{font-family:var(--serif);font-weight:600;font-size:18px;color:var(--cream)}
 .brand .bt small{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-top:1px}
-.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-left:auto;-webkit-overflow-scrolling:touch}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;margin:0 8px;-webkit-overflow-scrolling:touch}
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{flex:none;background:none;border:0;color:var(--cream-soft);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:9px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:.18s;position:relative}
 .tabs button:hover{color:var(--cream);background:rgba(231,178,74,.08)}
 .tabs button.on{color:var(--abyss);background:var(--gold)}
+.menu{position:relative;flex:none}
+.menu .mbtn{background:none;border:1px solid var(--line);color:var(--gold);border-radius:8px;padding:7px 11px;cursor:pointer;font-size:16px;line-height:1}
+.menu .mbtn:hover{background:rgba(231,178,74,.1)}
+.menu .mpanel{position:absolute;right:0;top:44px;min-width:236px;background:#0e2122;border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:var(--shadow);display:none;z-index:130}
+.menu.open .mpanel{display:block}
+.menu .mpanel a{display:block;padding:11px 13px;border-radius:8px;color:var(--cream);text-decoration:none;font-size:14px}
+.menu .mpanel a:hover{background:rgba(231,178,74,.1);color:var(--gold-bright)}
+.menu .mlabel{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);opacity:.7;padding:6px 13px 4px}
 
 /* TAB PANELS */
 main{position:relative;z-index:1}
@@ -220,6 +228,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
       <button data-t="ceo">CEO Review</button>
       <button data-t="better">Do It Better</button>
     </nav>
+    <div class="menu" id="menu">
+      <button class="mbtn" id="mbtn" aria-label="Resources menu">&#9776;</button>
+      <div class="mpanel">
+        <div class="mlabel">Resources</div>
+        <a href="app-preview.html">&#128241;&nbsp; App preview</a>
+        <a href="sponsor-pitch.html">&#128196;&nbsp; Sponsor one-pager</a>
+        <a href="SebaHub-Treasure-Hunt-Budget.xlsx">&#128202;&nbsp; Budget (Excel)</a>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -501,6 +518,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
     <span class="eyebrow rv">Finding 07 · the board</span>
     <h2 class="rv">The properties &amp; opportunities in play.</h2>
     <p class="lead rv">Everything Business as a Force for Good is building on Seba Beach — the game board the hunt threads together.</p>
+    <div class="callout rv">🎯 <b>At least one prize is hidden at every property on the board.</b> So players always have a reason to search all of them — and the hunt walks them through every door we have.</div>
     <div class="cards c3">
       <div class="card photo rv"><img src="images/aerial.jpg" alt="Seba Hub"><div class="pad"><div class="n">THE UMBRELLA</div><h4>Seba Hub</h4><p>The brand and incubator over it all — a former school turned business hub, &ldquo;a vibrant village for growing amazing children.&rdquo;</p></div></div>
       <div class="card photo rv"><img src="images/school.webp" alt="The school"><div class="pad"><div class="n">THE HEART</div><h4>The School &amp; Camps</h4><p>Events, activities and the new camps — the campus the whole destination grows around.</p></div></div>
@@ -601,6 +619,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
         <li><b>Stay on the board.</b> Search only the in-bounds areas the app marks. Occupied RV sites, private homes, guest spaces, staff areas and the water&rsquo;s edge are off-limits.</li>
         <li><b>Respect guests.</b> Do not enter or disturb anyone&rsquo;s site or rental. Trespass or harassment means disqualification.</li>
         <li><b>Be safe.</b> No digging in unsafe spots, no after-dark searching where posted, children supervised. Safety within the rules is your responsibility.</li>
+        <li><b>A prize at every property.</b> At least one prize is hidden at every property on the board &mdash; so it&rsquo;s always worth searching every stop.</li>
         <li><b>The prize is real.</b> It&rsquo;s hidden, documented, and attested every two weeks by a community accountant or judge.</li>
         <li><b>The prize grows.</b> Friday radio spins ($100&ndash;$1,000), Double-Take midweek days, and sponsor adds can raise the total — all announced publicly.</li>
         <li><b>Secondary prizes</b> have their own rules (see Prize Value). Radio-station giveaways are separate from the hunt.</li>
@@ -910,6 +929,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
     });
     window.__onTab=function(name){ Object.keys(reg).forEach(function(k){ if(k!=='landing'&&k!==name&&reg[k])reg[k].stop(); }); if(reg[name]) setTimeout(function(){reg[name].start();},40); };
     var eb=document.getElementById('enterBtn'); if(eb)eb.addEventListener('click',function(){ var pt=document.getElementById('planTop'); if(pt)pt.scrollIntoView({block:'start'}); });
+    var mb=document.getElementById('mbtn'), mn=document.getElementById('menu');
+    if(mb&&mn){ mb.addEventListener('click',function(e){ e.stopPropagation(); mn.classList.toggle('open'); }); document.addEventListener('click',function(){ mn.classList.remove('open'); }); }
     var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(function(){ Object.keys(reg).forEach(function(k){ if(reg[k]&&reg[k].resize)reg[k].resize(); }); },200); });
   }
   if(document.readyState!=='loading') boot(); else document.addEventListener('DOMContentLoaded',boot);
